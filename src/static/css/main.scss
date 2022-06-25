@@ -1,0 +1,36 @@
+.el-divider {
+    height: 0;
+}
+
+button {
+    padding: 8px 10px;
+    border-radius: 16px;
+}
+
+.splitline {
+    height: 1px;
+}
+
+.tx {
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+    overflow: hidden;
+    
+    &.a {
+        display: inline-block;
+        white-space:nowrap;
+    }
+    &.b {
+        -webkit-line-clamp: 2;
+    }
+    &.c {
+        -webkit-line-clamp: 3;
+    }
+    &.d {
+        -webkit-line-clamp: 4;
+    }
+}

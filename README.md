@@ -1,7 +1,7 @@
 # som_music
 
 #### 介绍
-基本的音乐播放器功能，目前实现了精选、排行榜、歌星、歌词。
+基本的音乐播放器功能,超小的运行环境不到2MB，目前实现了精选、排行榜、歌星、歌词。
 
 接口端依赖网易云音乐 API https://github.com/Binaryify/NeteaseCloudMusicApi 项目，需先启动接口端才可正常运行。
 

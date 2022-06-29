@@ -16,8 +16,12 @@
 启动命令：`npm run dev`
 
 #### 截图预览
-![主界面](preview1.png)
-![歌词](preview2.png)
-![设置](preview3.png)
-![托盘菜单](preview4.png)
-![MV视频](preview5.png)
+![主界面](preview/preview1.png)
+
+![歌词](preview/preview2.png)
+
+![设置](preview/preview3.png)
+
+![托盘菜单](preview/preview4.png)
+
+![MV视频](preview/preview5.png)

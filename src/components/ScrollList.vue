@@ -1,6 +1,6 @@
 <template>
-    <div class="list-view">
-        <div class="list scroll" @scroll="scroll">
+    <div class="scroll-list-view">
+        <div class="scroll-list scroll" @scroll="scroll">
             <slot></slot>
         </div>
     </div>
@@ -13,11 +13,11 @@ export default {
 </script>
 
 <style lang="scss">
-.list-view {
+.scroll-list-view {
     flex: 1;
     position: relative;
 
-    .list {
+    .scroll-list {
         position: absolute;
         left: 0;
         right: 0;

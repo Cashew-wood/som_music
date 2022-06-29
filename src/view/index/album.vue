@@ -1,10 +1,12 @@
 <template>
   <div class="album_main">
     <div class="top">
-      <img class="img" :src="album.picUrl+'?param=180y180'" />
+      <img class="img" :src="album.picUrl + '?param=180y180'" />
       <div class="info">
         <span class="name color_main">{{ album.name }}</span>
-        <span class="company color_secondary" v-if="album.company">发行公司：{{ album.company }}</span>
+        <span class="company color_secondary" v-if="album.company"
+          >发行公司：{{ album.company }}</span
+        >
         <div class="desc color_secondary">
           <span class="label"> 简介：</span>
           <span class="value tx c">{{ album.description }}</span>
@@ -15,8 +17,13 @@
     <div class="title color_main">歌曲</div>
     <div class="song-list">
       <div class="list scroll">
-        <div class="row color_main hover" v-for="(song, index) in songList" :key="index" @click="play(song)">
-          {{ song.name }} - {{ song.ar.map(e => e.name).join() }}
+        <div
+          class="row color_main hover"
+          v-for="(song, index) in songList"
+          :key="index"
+          @click="play(song)"
+        >
+          {{ song.name }} - {{ song.ar.map((e) => e.name).join() }}
         </div>
       </div>
     </div>
@@ -27,31 +34,30 @@
 export default {
   data() {
     return {
-      album: {
-      },
+      album: {},
       songList: [],
-      albumId: null
-    }
+      albumId: null,
+    };
   },
   async mounted() {
     this.albumId = this.$route.query.id;
     let album = await this.getDetail();
     this.album = album.album;
     this.songList = album.songs;
-    console.log(this.album)
+    console.log(this.album);
   },
   methods: {
     async getDetail() {
-      return (await this.$axios.get('/album?id=' + this.albumId)).data
+      return (await this.$axios.get("/album?id=" + this.albumId)).data;
     },
     allPlay() {
-      this.$parent.$parent.setPlayList(this.songList.map(e => e.id));
+      this.$parent.$parent.setPlayList(this.songList.map((e) => e.id));
     },
     play(item) {
       this.$parent.$parent.openSong(item.id);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -87,7 +93,7 @@ export default {
       .desc {
         display: flex;
         flex-direction: column;
-        flex:1;
+        flex: 1;
         .label {
           margin-bottom: 6px;
         }

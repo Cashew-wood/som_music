@@ -1,162 +1,226 @@
 <template>
-    <div class="lyric_main">
-        <canvas id="canvas"></canvas>
-    </div>
+  <div class="lyric_main">
+    <canvas class="canvas" id="layer0" :width="width" :height="height"></canvas>
+    <canvas class="canvas" id="layer1" :width="width" :height="height"></canvas>
+  </div>
 </template>
 
 <script>
-let playerId = 0
 let lyric = [];
-let foreground = null;
-let grd = null
-let canvasDom;
-let canvas;
+let lyricIndex = 0;
+let canvas = [];
 let current;
 let duration;
 let textSize;
+let screen;
+let defaultDisplay = [{ t: -1, text: "Som 音乐" }];
 export default {
-    setup() {
+  data() {
+    return {
+      width: 0,
+      height: 0,
+    };
+  },
 
-    },
-    async mounted() {
-        console.log('lyric')
-        let screen = { width: await window.native.device.screenWidth, height: await window.native.device.screenHeight };
-        let w = parseInt(screen.width * 0.9), h = 70;
-        window.native.window.width = w;
-        window.native.window.height = h;
-        window.native.window.left = parseInt(screen.width / 2 - w / 2);
-        window.native.window.top = parseInt(screen.height) - 70 * 2;
-        window.native.window.addDragMoveArea(0, 0, w, h);
-        window.native.window.hideInTaskView();
-        window.native.window.onMessage = (type, data) => {
-            if (type == 0) {
-                current = data.current * 1000;
-                duration = data.duration * 1000;
-                this.draw();
-            } else if (type == 1) {
-                this.setLyric(data);
-            }
-
+  setup() {},
+  async mounted() {
+    console.log("lyric");
+    document.querySelector("#app").setAttribute("class", "lyric_app");
+    screen = {
+      width: await window.native.device.screenWidth,
+      height: await window.native.device.screenHeight,
+    };
+    let h = 50;
+    for (let element of document.querySelectorAll(".canvas")) {
+      canvas.push(element.getContext("2d"));
+    }
+    console.log("layer", canvas);
+    lyric = defaultDisplay;
+    this.setColor();
+    this.setShadow();
+    this.setFont();
+    window.native.window.top = parseInt(screen.height) - 70 * 2;
+    window.native.window.addDragMoveArea(0, 0, 2000, 2000);
+    window.native.window.hideInTaskView();
+    window.native.window.onMessage = (type, data) => {
+      if (type == 0) {
+        current = data.current * 1000;
+        duration = data.duration * 1000;
+        this.draw();
+      } else if (type == 1) {
+        this.setLyric(data);
+      } else if (type == 10) {
+        this.config.refresh();
+        this.setFont();
+      }
+    };
+  },
+  methods: {
+    //[{"t":0,"text":"作词 : 张敬豪MR.HOW/镜千/向羽"},{"t":1000,"text":"作曲 : 张敬豪MR.HOW"},{"t":5058,"text":"出品：网易青云 Lab x网易子弹"},{"t":6058,"text":"【送给被怀疑、被嘲笑、"},{"t":7058,"text":"坚持热爱、坚持做自己的每一个你】"},{"t":9023,"text":"唐："},{"t":10023,"text":"无果难道花不开"},{"t":12069,"text":"无风难道云不来"},{"t":15036,"text":"无名难道梦不在"},{"t":18000,"text":"你不曾等待"},{"t":20067,"text":"就算渺小的存在"},{"t":23037,"text":"有种生根的热爱"},{"t":26004,"text":"就算举世的挫败"},{"t":28062,"text":"你不曾离开"},{"t":31072,"text":"张："},{"t":32073,"text":"Hey我跟你讲个故事"},{"t":34068,"text":"关于25年前 你坚持的那份幼稚"},{"t":37041,"text":"他们口中 你只是个固执不懂事的孩子"},{"t":40011,"text":"是所谓的反面例子 他们说的一文不值"},{"t":42084,"text":"说你是玻璃上的苍蝇 前途光明却没出路"},{"t":45090,"text":"后来你熬过凌晨四点的办公室 不服输"},{"t":48069,"text":"亮起那盏灯 做梦要做成真"},{"t":51003,"text":"梦就要在梦里 戴上耳机其它都不问"},{"t":53096,"text":"唐："},{"t":54096,"text":"你是我的骄傲"},{"t":57069,"text":"我要让你知道"},{"t":60036,"text":"这世界再纷扰"},{"t":63036,"text":"做自己就好"},{"t":65067,"text":"我最亲爱的骄傲"},{"t":68031,"text":"让我给你个拥抱"},{"t":71004,"text":"朝最远处奔跑"},{"t":74004,"text":"任天有多高"},{"t":87017,"text":"张："},{"t":88017,"text":"这是你与生俱来的天赋"},{"t":90051,"text":"能抵挡全世界嘲笑的那种孤注"},{"t":93021,"text":"你坚信只要努力 未来会在人们耳朵里住"},{"t":96021,"text":"就算被八倍镜瞄准 你也不肯后退半步"},{"t":98085,"text":"这一路横冲直撞 撞过多少南墙"},{"t":101067,"text":"人生就是起起落落 大不了落落大方"},{"t":104022,"text":"就算你已经变成 被生活拿捏的乙方"},{"t":106089,"text":"就算再多人说你不会成功 那又怎样"},{"t":109053,"text":"就保持做自己看自己 别管那大道理"},{"t":112014,"text":"Trust me要逼自己做到底 很努力更努力"},{"t":114081,"text":"更用力把哭声调静音 冲破那瓶颈"},{"t":117015,"text":"就算路牌写着禁止通行 你的梦也会灯火通明"},{"t":120021,"text":"在春暖花开的日子里 我等着你"},{"t":122091,"text":"要相信热爱 总能融化一个个困境"},{"t":125052,"text":"是你的偏执和坚持 成就了如今的我"},{"t":128025,"text":"而如今的我也正抬头挺胸 唱给现在的你"},{"t":131036,"text":"唐："},{"t":132036,"text":"你是我的骄傲"},{"t":135000,"text":"我要让你知道"},{"t":137067,"text":"这世界再纷扰"},{"t":140067,"text":"做自己就好"},{"t":143001,"text":"我最亲爱的骄傲"},{"t":145068,"text":"让我给你个拥抱"},{"t":148041,"text":"朝最远处奔跑"},{"t":151032,"text":"任天有多高"},{"t":153066,"text":"你是我的骄傲"},{"t":156036,"text":"我要让你知道"},{"t":159000,"text":"这世界再纷扰"},{"t":162003,"text":"做自己就好"},{"t":164034,"text":"我最亲爱的骄傲"},{"t":166098,"text":"让我给你个拥抱"},{"t":169074,"text":"朝最远处奔跑"},{"t":171063,"text":"问天有多高"},{"t":171096,"text":"企划：这里是猪厂"},{"t":172041,"text":"出品人：王燕凤/唐晶晶"},{"t":173025,"text":"音乐监制：季秋洋/薛婧婷"},{"t":173094,"text":"音乐统筹：镜千/苏文嫒"},{"t":174048,"text":"传播统筹：这里是猪厂"},{"t":175005,"text":"制作人：张敬豪 MR. HOW"},{"t":175065,"text":"编曲：冯宣元"},{"t":176004,"text":"吉他：曾令伟"},{"t":176037,"text":"和声编写配唱：郭亚男"},{"t":176094,"text":"唐汉霄人声录音师：蒲成龙/王子彬"},{"t":177087,"text":"唐汉霄人声录音棚：三亚谱创音乐"},{"t":178077,"text":"张敬豪 MR. HOW人声录音师：张敬豪 MR. HOW"},{"t":179094,"text":"张敬豪 MR. HOW人声录音棚： howmusic"},{"t":180090,"text":"混音工程师：刘俊杰/阮祥博_ Ocicat"},{"t":182055,"text":"母带工程师：刘俊杰"}]
+    setLyric(str) {
+      console.log(str);
+      lyric = [];
+      for (let line of str.split("\n")) {
+        if (line.trim().length == 0) continue;
+        let start = 0;
+        let times = [];
+        let end = 0;
+        while (line[start] == "[") {
+          start += 1;
+          end = line.indexOf("]", start);
+          let time = line.substring(start, end);
+          start = end + 1;
+          let m_s_ms = time.split(":");
+          let s_ms = m_s_ms[1].split(".");
+          times.push(
+            parseInt(m_s_ms[0]) * 60000 + parseInt(s_ms[0]) * 1000 + parseInt(s_ms[1])
+          );
         }
-        lyric = [{ t: -1, text: 'Som 音乐' }]
-        canvasDom = document.getElementById('canvas');
-        canvas = canvasDom.getContext('2d');
-        canvasDom.setAttribute("width", w)
-        canvasDom.setAttribute("height", h)
+        for (let t of times) {
+          lyric.push({ t, text: line.substring(start).trim() });
+        }
+      }
+      lyric = lyric.sort((a, b) => a.t - b.t);
+      console.log(lyric);
+    },
+    setColor() {
+      // foreground = canvas.createLinearGradient(0, 0, 0, canvasDom.height);
+      // let colors = [
+      //   "#d16ba5",
+      //   "#c777b9",
+      //   "#ba83ca",
+      //   "#aa8fd8",
+      //   "#9a9ae1",
+      //   "#8aa7ec",
+      //   "#79b3f4",
+      //   "#69bff8",
+      //   "#52cffe",
+      //   "#41dfff",
+      //   "#46eefa",
+      //   "#5ffbf1",
+      // ];
+      // for (let i = 0; i < colors.length; i++) {
+      //   foreground.addColorStop(((1 / (colors.length - 1)) * i).toFixed(2), colors[i]);
+      // }
+      // grd = canvas.createLinearGradient(0, 0, 0, canvasDom.height);
+      // colors = formatColors(
+      //   "#720c47, #6b1956, #612463, #542d6e, #423677, #32407e, #1e4982, #005184, #005c83, #00657e, #016d77, #2f7470"
+      // );
+      // for (let i = 0; i < colors.length; i++) {
+      //   grd.addColorStop(((1 / (colors.length - 1)) * i).toFixed(2), colors[i]);
+      // }
+      canvas[0].fillStyle = this.config.lyricForeground;
+      canvas[1].fillStyle = this.config.lyricBackground;
+      console.log(canvas[0].fillStyle, canvas[1].fillStyle);
+    },
+    setShadow() {
+      for (let item of canvas) {
+        item.shadowColor = this.config.lyricShadowColor;
+        item.shadowBlur = this.config.lyricShadowSize;
+      }
+    },
+    setFont(notDraw) {
+      console.log("set font");
+      let any = canvas[0];
+      any.font = `${this.config.lyricFontSize}px ${this.config.lyricFont}`;
+      console.log(any.font);
+      textSize = any.measureText(lyric[lyricIndex].text);
+      let w = textSize.width,
+        h =
+          textSize.actualBoundingBoxAscent +
+          textSize.actualBoundingBoxDescent +
+          this.config.lyricShadowSize -
+          1;
+      console.log(textSize);
+      window.native.window.height = h;
+      window.native.window.width = w;
+      window.native.window.left = parseInt(screen.width / 2 - w / 2);
+      this.width = w;
+      this.height = h;
+      textSize.index = lyricIndex;
+      this.$nextTick(() => {
+        //set w/h auto clear property
+        for (let item of canvas) {
+          item.font = `${this.config.lyricFontSize}px ${this.config.lyricFont}`;
+        }
         this.setColor();
-        this.play();
+        this.setShadow();
+        !notDraw && this.draw();
+      });
     },
-    methods: {
-        //[{"t":0,"text":"作词 : 张敬豪MR.HOW/镜千/向羽"},{"t":1000,"text":"作曲 : 张敬豪MR.HOW"},{"t":5058,"text":"出品：网易青云 Lab x网易子弹"},{"t":6058,"text":"【送给被怀疑、被嘲笑、"},{"t":7058,"text":"坚持热爱、坚持做自己的每一个你】"},{"t":9023,"text":"唐："},{"t":10023,"text":"无果难道花不开"},{"t":12069,"text":"无风难道云不来"},{"t":15036,"text":"无名难道梦不在"},{"t":18000,"text":"你不曾等待"},{"t":20067,"text":"就算渺小的存在"},{"t":23037,"text":"有种生根的热爱"},{"t":26004,"text":"就算举世的挫败"},{"t":28062,"text":"你不曾离开"},{"t":31072,"text":"张："},{"t":32073,"text":"Hey我跟你讲个故事"},{"t":34068,"text":"关于25年前 你坚持的那份幼稚"},{"t":37041,"text":"他们口中 你只是个固执不懂事的孩子"},{"t":40011,"text":"是所谓的反面例子 他们说的一文不值"},{"t":42084,"text":"说你是玻璃上的苍蝇 前途光明却没出路"},{"t":45090,"text":"后来你熬过凌晨四点的办公室 不服输"},{"t":48069,"text":"亮起那盏灯 做梦要做成真"},{"t":51003,"text":"梦就要在梦里 戴上耳机其它都不问"},{"t":53096,"text":"唐："},{"t":54096,"text":"你是我的骄傲"},{"t":57069,"text":"我要让你知道"},{"t":60036,"text":"这世界再纷扰"},{"t":63036,"text":"做自己就好"},{"t":65067,"text":"我最亲爱的骄傲"},{"t":68031,"text":"让我给你个拥抱"},{"t":71004,"text":"朝最远处奔跑"},{"t":74004,"text":"任天有多高"},{"t":87017,"text":"张："},{"t":88017,"text":"这是你与生俱来的天赋"},{"t":90051,"text":"能抵挡全世界嘲笑的那种孤注"},{"t":93021,"text":"你坚信只要努力 未来会在人们耳朵里住"},{"t":96021,"text":"就算被八倍镜瞄准 你也不肯后退半步"},{"t":98085,"text":"这一路横冲直撞 撞过多少南墙"},{"t":101067,"text":"人生就是起起落落 大不了落落大方"},{"t":104022,"text":"就算你已经变成 被生活拿捏的乙方"},{"t":106089,"text":"就算再多人说你不会成功 那又怎样"},{"t":109053,"text":"就保持做自己看自己 别管那大道理"},{"t":112014,"text":"Trust me要逼自己做到底 很努力更努力"},{"t":114081,"text":"更用力把哭声调静音 冲破那瓶颈"},{"t":117015,"text":"就算路牌写着禁止通行 你的梦也会灯火通明"},{"t":120021,"text":"在春暖花开的日子里 我等着你"},{"t":122091,"text":"要相信热爱 总能融化一个个困境"},{"t":125052,"text":"是你的偏执和坚持 成就了如今的我"},{"t":128025,"text":"而如今的我也正抬头挺胸 唱给现在的你"},{"t":131036,"text":"唐："},{"t":132036,"text":"你是我的骄傲"},{"t":135000,"text":"我要让你知道"},{"t":137067,"text":"这世界再纷扰"},{"t":140067,"text":"做自己就好"},{"t":143001,"text":"我最亲爱的骄傲"},{"t":145068,"text":"让我给你个拥抱"},{"t":148041,"text":"朝最远处奔跑"},{"t":151032,"text":"任天有多高"},{"t":153066,"text":"你是我的骄傲"},{"t":156036,"text":"我要让你知道"},{"t":159000,"text":"这世界再纷扰"},{"t":162003,"text":"做自己就好"},{"t":164034,"text":"我最亲爱的骄傲"},{"t":166098,"text":"让我给你个拥抱"},{"t":169074,"text":"朝最远处奔跑"},{"t":171063,"text":"问天有多高"},{"t":171096,"text":"企划：这里是猪厂"},{"t":172041,"text":"出品人：王燕凤/唐晶晶"},{"t":173025,"text":"音乐监制：季秋洋/薛婧婷"},{"t":173094,"text":"音乐统筹：镜千/苏文嫒"},{"t":174048,"text":"传播统筹：这里是猪厂"},{"t":175005,"text":"制作人：张敬豪 MR. HOW"},{"t":175065,"text":"编曲：冯宣元"},{"t":176004,"text":"吉他：曾令伟"},{"t":176037,"text":"和声编写配唱：郭亚男"},{"t":176094,"text":"唐汉霄人声录音师：蒲成龙/王子彬"},{"t":177087,"text":"唐汉霄人声录音棚：三亚谱创音乐"},{"t":178077,"text":"张敬豪 MR. HOW人声录音师：张敬豪 MR. HOW"},{"t":179094,"text":"张敬豪 MR. HOW人声录音棚： howmusic"},{"t":180090,"text":"混音工程师：刘俊杰/阮祥博_ Ocicat"},{"t":182055,"text":"母带工程师：刘俊杰"}]
-        setLyric(str) {
-            console.log(str);
-            lyric = []
-            for (let line of str.split('\n')) {
-                if (line.trim().length == 0) continue;
-                let start = 0;
-                let times = []
-                let end = 0;
-                while (line[start] == '[') {
-                    start += 1;
-                    end = line.indexOf(']', start);
-                    let time = line.substring(start, end);
-                    start = end + 1;
-                    let m_s_ms = time.split(':');
-                    let s_ms = m_s_ms[1].split('.');
-                    times.push(parseInt(m_s_ms[0]) * 60000 + parseInt(s_ms[0]) * 1000 + parseInt(s_ms[1]))
-                }
-                for (let t of times) {
-                    lyric.push({ t, text: line.substring(start).trim() })
-                }
-            }
-            lyric = lyric.sort((a, b) => a.t - b.t)
-            console.log(lyric)
-            this.play();
-        },
-        setColor() {
-            foreground = canvas.createLinearGradient(0, 0, 0, canvasDom.height);
-            let colors = ['#d16ba5', '#c777b9', '#ba83ca', '#aa8fd8', '#9a9ae1', '#8aa7ec', '#79b3f4', '#69bff8', '#52cffe', '#41dfff', '#46eefa', '#5ffbf1']
-            for (let i = 0; i < colors.length; i++) {
-                foreground.addColorStop(((1 / (colors.length - 1)) * i).toFixed(2), colors[i]);
-            }
-            grd = canvas.createLinearGradient(0, 0, 0, canvasDom.height);
-            colors = formatColors('#720c47, #6b1956, #612463, #542d6e, #423677, #32407e, #1e4982, #005184, #005c83, #00657e, #016d77, #2f7470');
-            for (let i = 0; i < colors.length; i++) {
-                grd.addColorStop(((1 / (colors.length - 1)) * i).toFixed(2), colors[i]);
-            }
-        },
-        play() {
-            clearInterval(playerId);
-            canvas.font = '78px 楷体';
-
-            console.log(lyric)
-            this.draw();
-        },
-        draw() {
-            canvas.clearRect(0, 0, canvasDom.width, canvasDom.height);
-            if (lyric.length == 0) return;
-            let index, rate
-            if (lyric[0].t == -1) {
-                index = 0;
-                rate = 1;
-            } else {
-                let now = current;
-                index = lyric.findIndex(e => e.t > now) - 1;
-                if (index > -1) {
-                    let next = (index + 1 == lyric.length ? duration : lyric[index + 1].t);
-                    let d = now - lyric[index].t;
-                    rate = d / (next - lyric[index].t);
-                } else if (lyric.length > 0) {
-                    index = lyric.length - 1;
-                    rate = 1;
-                } else {
-                    return;
-                }
-            }
-            let text = lyric[index].text;
-            if (!textSize || textSize.index != index) {
-                textSize = canvas.measureText(lyric[index].text);
-                textSize.index = index;
-            }
-            let x = textSize.width * rate;
-            canvas.fillStyle = foreground;
-            let startX = canvasDom.width / 2 - textSize.width / 2;
-            canvas.fillText(text, startX, canvasDom.height / 2 - textSize.actualBoundingBoxAscent / 2 + textSize.actualBoundingBoxAscent);
-            canvas.clearRect(startX + x, 0, canvasDom.width - x - startX, canvasDom.height);
-            canvas.globalCompositeOperation = 'destination-atop'
-            canvas.fillStyle = grd;
-            canvas.fillText(text, startX, canvasDom.height / 2 - textSize.actualBoundingBoxAscent / 2 + textSize.actualBoundingBoxAscent);
-            canvas.globalCompositeOperation = 'source-over'
-
+    draw() {
+      for (let item of canvas) {
+        item.clearRect(0, 0, this.width, this.height);
+      }
+      if (lyric.length == 0) return;
+      let rate;
+      if (lyric[0].t == -1) {
+        lyricIndex = 0;
+        rate = 1;
+      } else {
+        let now = current;
+        lyricIndex = lyric.findIndex((e) => e.t > now) - 1;
+        if (lyricIndex > -1) {
+          let next = lyricIndex + 1 == lyric.length ? duration : lyric[lyricIndex + 1].t;
+          let d = now - lyric[lyricIndex].t;
+          rate = d / (next - lyric[lyricIndex].t);
+        } else if (lyric.length > 0) {
+          lyricIndex = lyric.length - 1;
+          rate = 1;
+        } else {
+          lyric = defaultDisplay;
+          return;
         }
-    }
-
-}
+      }
+      let text = lyric[lyricIndex].text;
+      if (!textSize || textSize.index != lyricIndex) {
+        this.setFont(true);
+      }
+      let x = textSize.width * rate;
+      let startX = 0;
+      canvas[0].fillText(
+        text,
+        startX,
+        this.height - textSize.actualBoundingBoxDescent - this.config.lyricShadowSize + 1
+      );
+      canvas[0].clearRect(startX + x, 0, this.width - x - startX, this.height);
+      canvas[1].fillText(
+        text,
+        startX,
+        this.height - textSize.actualBoundingBoxDescent - this.config.lyricShadowSize + 1
+      );
+      canvas[1].clearRect(startX, 0, x, this.height);
+    },
+  },
+};
 function formatColors(str) {
-    var a = [];
-    for (let color of str.split(',')) {
-        a.push(color.trim())
-    }
-    return a
+  var a = [];
+  for (let color of str.split(",")) {
+    a.push(color.trim());
+  }
+  return a;
 }
 </script>
 
 <style>
 body,
 html,
-#app {
-    padding: 0;
-    margin: 0;
+.lyric_app {
+  padding: 0 !important;
+  margin: 0;
 }
-
 
 .lyric_main {
-    width: 100%;
-    height: 100%;
-    display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-#canvas {
-    flex: 1;
+.canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 </style>

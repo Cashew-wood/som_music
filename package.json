@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^0.27.2",
     "element-plus": "^2.2.6",
+    "video.js": "^7.19.2",
     "vue": "^3.2.25",
+    "vue-color-kit": "^1.0.5",
     "vue-router": "^4.0.16"
   },
   "devDependencies": {

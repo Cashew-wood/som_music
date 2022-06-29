@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3478837 */
-  src: url('../font/iconfont.ttf') format('truetype');
+  src: url('../font/iconfont.ttf?t=1') format('truetype');
 }
 
 .iconfont {
@@ -9,6 +9,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-24gf-gear4:before {
+  content: "\e9c2";
+}
+
+.icon-24gf-videoCamera:before {
+  content: "\e9f5";
 }
 
 .icon-24gf-volumeCross:before {

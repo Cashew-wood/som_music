@@ -7,6 +7,10 @@ import elaborate from './view/index/tabs/elaborate.vue'
 import ranking from './view/index/tabs/ranking.vue'
 import singer from './view/index/tabs/singer.vue'
 import singer_sheet from './view/index/singer_sheet.vue'
+import mv from './view/index/mv.vue'
+import video from './view/video.vue'
+import setup from './view/setup.vue'
+import menu from './view/menu.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [{
     path: '/index', component: index,
@@ -32,9 +36,20 @@ const routes = [{
     }, {
         path: 'singer_sheet',
         component: singer_sheet
+    }, {
+        path: 'mv',
+        component: mv
     }]
 }, {
     path: '/lyric', component: lyric,
+}, {
+    path: '/video', component: video,
+}, {
+    path: '/setup',
+    component: setup
+}, {
+    path: '/menu',
+    component: menu
 }]
 const router = createRouter({
     history: createWebHashHistory(),

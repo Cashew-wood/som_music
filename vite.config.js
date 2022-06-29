@@ -20,8 +20,6 @@ export default defineConfig({
     resolvers: [ElementPlusResolver()],
   }),{
     configureServer:(e)=>{
-      let address=e.httpServer.address();
-      console.log(e.httpServer.port);
       if(execute)execute=false;
       else return;
       let doneFn=()=>{

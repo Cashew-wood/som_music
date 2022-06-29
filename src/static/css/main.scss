@@ -9,6 +9,7 @@ button {
 
 .splitline {
     height: 1px;
+    margin: 8px;
 }
 
 .tx {
@@ -33,4 +34,24 @@ button {
     &.d {
         -webkit-line-clamp: 4;
     }
+}
+.el-popper{
+    border: 0 !important;
+}
+.el-popover.el-popper{
+    padding: 0;
+}
+.el-slider__button{
+    border: 0;
+}
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+}
+
+#app {
+  padding: 10px;
+  box-sizing: border-box;
 }

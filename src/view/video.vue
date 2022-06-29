@@ -1,0 +1,124 @@
+<template>
+  <div class="video_main">
+    <div class="title-bar" v-show="!windowMax">
+      <span class="left">{{ title }}</span>
+      <div class="right">
+        <span class="max iconfont icon-3zuidahua-1" @click="max"></span>
+        <span class="close iconfont icon-guanbi" @click="close"></span>
+      </div>
+    </div>
+    <video
+      id="video"
+      controls
+      :src="src"
+      autoplay
+      :style="{ height: windowMax ? windowHeight + 'px' : '' }"
+    ></video>
+  </div>
+</template>
+
+<script>
+let video;
+export default {
+  data() {
+    return {
+      src: null,
+      title: null,
+      windowMax: false,
+      windowHeight: 0,
+    };
+  },
+  setup() {
+    window.native.window.width = 800;
+    window.native.window.addDragMoveArea(0, 0, 800, 40);
+  },
+  async mounted() {
+    video = document.getElementById("video");
+    video.addEventListener("webkitfullscreenchange", this.fullscreen);
+    video.addEventListener("fullscreenchange", this.fullscreen);
+    this.src = await window.native.window.data.src;
+    this.title = (await window.native.window.title) || "Som Music";
+    video.addEventListener("canplay", () => {
+      this.resize();
+    });
+    // let suffixIndex = this.src.indexOf('?');
+    // this.suffix = this.src.substring((suffixIndex > -1 ? this.src.indexOf('.', suffixIndex - 4) : this.src.lastIndexOf('.')) + 1, suffixIndex > -1 ? suffixIndex : this.src.length);
+    new ResizeObserver((e) => {
+      console.log(e);
+      this.windowHeight = document.getElementById("app").offsetHeight;
+    }).observe(document.getElementById("app"));
+  },
+  methods: {
+    fullscreen() {
+      console.log("fullscreen event");
+      if (document.webkitFullscreenElement) {
+        window.native.window.state = "max";
+        this.windowMax = true;
+      } else {
+        window.native.window.state = "normal";
+        this.windowMax = false;
+      }
+    },
+    resize() {
+      window.native.window.height = video.offsetHeight + 20;
+      window.native.window.showCenter();
+      console.log(video.offsetHeight);
+    },
+    close() {
+      window.native.window.close();
+    },
+    max() {
+      window.native.window.state = "max";
+      video.requestFullscreen();
+      this.windowMax = true;
+    },
+  },
+};
+</script>
+
+<style lang="scss">
+#app {
+  overflow: hidden;
+}
+
+#video {
+  width: 100%;
+  box-shadow: 0 0 10px #000;
+  padding: 0;
+}
+
+.video_main {
+  position: relative;
+}
+
+.title-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(43, 51, 63, 0.5);
+  align-items: center;
+  height: 41px;
+  z-index: 1;
+
+  .left {
+    margin-left: 12px;
+    color: #fff;
+    flex: 1;
+    text-align: center;
+  }
+
+  .close,
+  .max {
+    padding: 10px 12px;
+    font-size: 20px;
+    color: #fff;
+
+    &:hover {
+      color: #ccc;
+    }
+  }
+}
+</style>

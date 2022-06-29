@@ -1,0 +1,187 @@
+$color: #000;
+$color_secondary: #424243;
+$color_tint:#666;
+$bg_color:#fff;
+$bg_color_light:#eee;
+$bg_color_tint:#ccc;
+$color_deep:#999;
+
+:root {
+  --color-text-primary: rgb(0,0,0);
+  --color-text-tinit: rgb(66,66,67);
+  --color-bg-primary: rgba(255, 255, 255, 0.95);
+  --color-bg-light : rgb(220, 220, 220);
+  --color-bg-shadow: rgba(225, 225, 225, 0.95);
+  --color-search-bg: rgba(204, 204, 204, 0.3);
+  --color-scroll-bg: rgba(153, 153, 153, 0.1);
+  --color-scroll-slider: rgba(153, 153, 153, 0.2);
+  --color-progress-bg: rgb(238,238,238);
+  --color-progress-slider: rgb(204, 204, 204);
+  --color-progress-dot: rgb(153, 153, 153);
+  --color-select-hover: rgba(153, 153, 153, 0.15);
+  --color-select-active: rgba(153, 153, 153, 0.3);
+  --color-panel-shadow: rgba(0, 0, 0, 0.5);
+  --color-volume-progress-bg: rgb(238,238,238);
+  --color-volume-progress-slider: rgba(255, 255, 255, 0.5);
+  --color-split-line-tint: rgb(204, 204, 204)
+  --color-split-line-deep: rgb(153, 153, 153);
+  --color-text-btn-primary: #424243;
+  --color-border-primary: #ccc;
+  --color-button-full: rgb(239,239,239);
+}
+
+.main_bg {
+  background-color: var(--color-bg-primary);
+  box-shadow: 0 0 10px var(--color-bg-shadow);
+}
+
+.search {
+  background-color: var(--color-search-bg);
+}
+
+.color_main {
+  color: var(--color-text-primary);
+}
+
+.color_secondary {
+  color: var(--color-text-tinit);
+}
+
+.icon_top_btn {
+  color: var(--color-text-tinit);
+
+  &.hover:hover {
+    color: $color;
+    text-shadow: 0 0 5px var(--color-text-tinit);
+  }
+}
+
+
+.scroll {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-scroll-slider);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-scroll-bg);
+    border-radius: 4px;
+  }
+}
+
+.player {
+
+  //播放器进度条-进度色
+  .el-slider__bar {
+    background-color: var(--color-progress-slider)
+  }
+
+  //底色
+  .el-slider__runway {
+    background-color: var(--color-progress-bg);
+    box-shadow: 0 0px 6px var(--color-text-tinit);
+  }
+
+  //拖动的原点色
+  .el-slider__button {
+    box-shadow: 0 0 5px var(--color-bg-primary);
+    background-color: var(--color-progress-dot)
+  }
+}
+
+.color_main.hover:hover {
+  text-shadow: 0 0 5px var(--color-bg-primary);
+}
+
+.el-select-dropdown__item.hover,.el-select-dropdown__item.hover:hover,.select.h:hover {
+  background-color: var(--color-select-hover)
+}
+
+.select.a {
+  background-color: var(--color-select-active)
+}
+
+.volume-panel {
+  background-color: var(--color-progress-bg);
+  box-shadow: 0 0 10px var(--color-panel-shadow);
+
+  .el-slider__bar {
+    background-color: var(--color-volume-progress-slider)
+  }
+
+  .el-slider__runway {
+    background-color: var(--color-volume-progress-bg)
+  }
+
+  .el-slider__button {
+    box-shadow: 0 0 5px var(--color-bg-primary);
+    background-color: var(--color-progress-dot)
+  }
+}
+
+//volume panel arrow
+// .el-popper.is-dark .el-popper__arrow::before{
+//   background-color: #333;
+//   box-shadow: 0 0 10px rgba($color: #000, $alpha: 0.4);
+// }
+button {
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-button-full);
+
+  &:hover {
+    box-shadow: 0 0 5pxvar(--color-button-full);
+  }
+
+  &.full {
+    background-color: var(--color-button-full);
+    border: 0;
+    border: 1px solid var(--color-border-primary);
+  }
+}
+
+.splitline {
+  background-color: var(--color-split-line-tint);
+}
+
+.btn {
+  color: var(--color-text-btn-primary);
+}
+
+.border {
+  border: 1px solid var(--color-border-primary);
+}
+
+.el-radio{
+  color: var(--color-text-primary)
+}
+.el-radio__input.is-checked+.el-radio__label{
+  color: var(--color-text-primary)
+}
+.el-input{
+  --el-input-bg-color: transparent;
+  --el-input-text-color: var(--color-text-primary);
+  --el-border-color: var(--color-border-primary)
+}
+.el-select-dropdown__item{
+  --el-text-color-regular:  var(--color-text-primary);
+}
+.el-select__popper.el-popper{
+  background-color: var(--color-bg-primary);
+}
+.el-select-dropdown__item.selected{
+  color: var(--color-text-primary);
+}
+.el-popper__arrow{
+  display: none;
+}
+.el-color-picker__trigger{
+  border: 1px solid var(--color-border-primary);
+}
+.el-input-number__decrease, .el-input-number__increase{
+  background: var(--color-bg-light)
+}

@@ -3,7 +3,12 @@
     <ScrollListVue>
       <div class="title color_main">推荐</div>
       <div class="list">
-        <div class="block" v-for="(item, i) in personalized" :key="i" @click="look(item)">
+        <div
+          class="block"
+          v-for="(item, i) in personalized"
+          :key="i"
+          @click="look(item)"
+        >
           <img class="img" :src="item.picUrl + '?param=185y105'" />
           <div class="info color_main tx a">
             {{ item.name }}
@@ -12,7 +17,12 @@
       </div>
       <div class="title color_main">最新</div>
       <div class="list">
-        <div class="block" v-for="(item, i) in exclusive" :key="i" @click="look(item)">
+        <div
+          class="block"
+          v-for="(item, i) in exclusive"
+          :key="i"
+          @click="look(item)"
+        >
           <img class="img" :src="item.cover + '?param=185y105'" />
           <div class="info color_main tx a">
             {{ item.name }}
@@ -21,7 +31,12 @@
       </div>
       <div class="title color_main">独家</div>
       <div class="list">
-        <div class="block" v-for="(item, i) in news" :key="i" @click="look(item)">
+        <div
+          class="block"
+          v-for="(item, i) in news"
+          :key="i"
+          @click="look(item)"
+        >
           <img class="img" :src="item.cover + '?param=185y105'" />
           <div class="info color_main tx a">
             {{ item.name }}
@@ -34,6 +49,8 @@
 
 <script>
 import ScrollListVue from "../../components/ScrollList.vue";
+import icon from '../../static/img/logo.png'
+let video;
 export default {
   data() {
     return {
@@ -43,6 +60,11 @@ export default {
     };
   },
   async mounted() {
+    window.native.window.createWindow(location.origin+'#video').then((win) => {
+      win.icon = icon;
+      win.width = 800;
+      video = win;
+    });
     this.personalized = await this.getPersonalized();
     this.exclusive = await this.getExclusive();
     this.news = await this.getNews();
@@ -64,14 +86,11 @@ export default {
       return (await this.$axios.get("/mv/url?id=" + id)).data.data.url;
     },
     async look(item) {
-      let win = await window.native.window.createWindow(location.origin);
-      win.data.page = "/video";
-      win.icon = "/src/static/img/logo.png";
-      win.title = item.name;
       let url = await this.getVideo(item.id);
-      win.data.src = url;
-      console.log(url);
-      win.show(true, () => {});
+      video.data.src = url;
+      video.title = item.name;
+      video.width = (await video.width) == 800 ? 801 : 800;
+      video.show(true, () => {});
     },
   },
 };

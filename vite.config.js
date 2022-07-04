@@ -4,6 +4,7 @@ const { execFile,exec  } = require('node:child_process');
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
 // https://vitejs.dev/config/
 let execute=true
 export default defineConfig({
@@ -19,12 +20,20 @@ export default defineConfig({
   Components({
     resolvers: [ElementPlusResolver()],
   }),{
+    closeBundle:(e)=>{
+        let dist=import.meta.url.substring(8,import.meta.url.lastIndexOf("/")).replaceAll('/','\\')+'\\dist';
+       execFile('bin\\WebUIBuild.exe', ['res='+dist,'icon={index}','name=Som 音乐','embedded','output='+dist+'\\build','app.company=Som',
+      'app.product=Music','app.copyright=Som','app.trademark=Som','app.version=1.0.0.1'], (error, stdout, stderr) => {
+          console.log(error,stdout,stderr)
+        });
+    
+    },
     configureServer:(e)=>{
       if(execute)execute=false;
       else return;
       let doneFn=()=>{
-        execFile('bin\\WebUI.exe', [`http://localhost:${e.config.server.port || 3000}`], (error, stdout, stderr) => {
-  
+        execFile('bin\\WebUIProgram.exe', [`http://localhost:${e.config.server.port || 3000}`,0,2], (error, stdout, stderr) => {
+          console.log(error,stdout,stderr)
         });
       }
       doneFn();

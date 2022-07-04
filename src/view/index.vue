@@ -6,14 +6,21 @@
         <SearchBox class="search" />
       </div>
       <div class="right">
-        <span class="iconfont icon-24gf-gear4 icon_top_btn hover" @click="setup" />
+        <span
+          class="iconfont icon-24gf-gear4 icon_top_btn hover"
+          @click="setup"
+        />
         <span
           class="min iconfont icon-24gl-minimization icon_top_btn hover"
           @click="setWindowState('min')"
         ></span>
         <span
           class="max iconfont icon-3zuidahua-1 icon_top_btn hover"
-          @click="windowState == 'max' ? setWindowState('normal') : setWindowState('max')"
+          @click="
+            windowState == 'max'
+              ? setWindowState('normal')
+              : setWindowState('max')
+          "
         ></span>
         <span
           class="close iconfont icon-guanbi icon_top_btn hover"
@@ -24,16 +31,28 @@
     <div class="body">
       <div class="left-menu">
         <div class="label color_secondary">在线音乐</div>
-        <div class="item select h" :class="{ a: menuSelect == 0 }" @click="selectMenu(0)">
+        <div
+          class="item select h"
+          :class="{ a: menuSelect == 0 }"
+          @click="selectMenu(0)"
+        >
           <span class="iconfont color_main icon-yinle"></span>
           <span class="text color_main">音乐馆</span>
         </div>
-        <div class="item select h" :class="{ a: menuSelect == 1 }" @click="selectMenu(1)">
+        <div
+          class="item select h"
+          :class="{ a: menuSelect == 1 }"
+          @click="selectMenu(1)"
+        >
           <span class="iconfont color_main icon-24gf-videoCamera"></span>
           <span class="text color_main">MV</span>
         </div>
         <div class="label color_secondary">我的音乐</div>
-        <div class="item select h" :class="{ a: menuSelect == 2 }" @click="selectMenu(2)">
+        <div
+          class="item select h"
+          :class="{ a: menuSelect == 2 }"
+          @click="selectMenu(2)"
+        >
           <span class="iconfont color_main icon-diannao"></span>
           <span class="text color_main">本地音乐</span>
         </div>
@@ -51,10 +70,16 @@
             @click="skipProgress"
           />
           <div class="left">
-            <img class="pic" v-if="player.pic" :src="player.pic + '?param=48y48'" />
+            <img
+              class="pic"
+              v-if="player.pic"
+              :src="player.pic + '?param=48y48'"
+            />
             <img class="pic" v-else src="../static/img/default_music.jpg" />
             <div class="info">
-              <span class="name color_main">{{ player.name || "Som Music" }}</span>
+              <span class="name color_main">{{
+                player.name || "Som Music"
+              }}</span>
               <span class="time color_secondary"
                 >{{ player.current }}/{{ player.duration }}</span
               >
@@ -68,7 +93,9 @@
             <span
               class="item iconfont play color_main hover"
               :class="
-                player.status == 1 ? 'icon-24gf-pauseCircle' : 'icon-24gf-playCircle'
+                player.status == 1
+                  ? 'icon-24gf-pauseCircle'
+                  : 'icon-24gf-playCircle'
               "
               @click="play"
             ></span>
@@ -139,10 +166,11 @@
 const audio = new Audio();
 import SearchBox from "../components/SearchBox.vue";
 // import { message } from 'element-plus'
+import icon from '../static/img/logo.png'
 let lyric;
 let audioId;
 let menu;
-let icon="/src/static/img/logo.png";
+let setup;
 export default {
   name: "App",
   components: {
@@ -186,12 +214,11 @@ export default {
     window.native.window.height = 800;
     window.native.window.addDragMoveArea(0, 0, 1200, 50);
     window.native.window.showCenter();
-
     window.native.window.onClose(() => {
       window.native.window.hide();
     });
     window.native.window.setNotifyIcon(
-      "/src/static/img/logo.png",
+      icon,
       "Som Music",
       (type, button, x, y) => {
         if (type == 1 && button == 0) {
@@ -202,20 +229,28 @@ export default {
         }
       }
     );
-    let win = await window.native.window.createWindow(location.origin);
-    win.data.page = "/lyric";
-    win.showInTaskbar = false;
-    win.topmost = true;
-    win.show(false);
-    lyric = win;
-    setTimeout(async () => {
-      menu = await window.native.window.createWindow(location.origin);
-      menu.data.page = "/menu";
-      menu.data.x = 0;
-      menu.data.y = 0;
-      menu.showInTaskbar = false;
-      menu.show(false);
-    }, 1000);
+    window.native.window.createWindow(location.origin+'#setup').then((win) => {
+      win.title = "设置";
+      win.icon = icon;
+      win.width = 500;
+      win.height = 700;
+      setup = win;
+    });
+
+    window.native.window.createWindow(location.origin+'#lyric').then((win) => {
+      win.title = "歌词";
+      win.showInTaskbar = false;
+      win.topmost = true;
+      if (this.config.lyric) win.show(false);
+      lyric = win;
+    });
+    window.native.window.createWindow(location.origin+'#menu').then((win) => {
+      win.title = "菜单";
+      win.showInTaskbar = false;
+      win.show(false);
+      menu = win;
+    });
+
     window.addEventListener("invoke", (e) => {
       let data = e.detail;
       this[data.method].apply(this, data.args);
@@ -238,6 +273,9 @@ export default {
         }
       }
     };
+    window.addEventListener('drag',({detail})=>{
+        console.log(detail)
+    })
     this.readConfig();
   },
   methods: {
@@ -312,8 +350,13 @@ export default {
         parseInt(audio.duration % 60)
           .toString()
           .padStart(2, "0");
-      this.player.progress = parseInt((audio.currentTime / audio.duration) * 2000);
-      lyric.onMessage(0, { current: audio.currentTime, duration: audio.duration });
+      this.player.progress = parseInt(
+        (audio.currentTime / audio.duration) * 2000
+      );
+      lyric.onMessage(0, {
+        current: audio.currentTime,
+        duration: audio.duration,
+      });
       if (audio.currentTime == audio.duration && this.player.status == 1) {
         clearInterval(audioId);
         this.next();
@@ -347,13 +390,18 @@ export default {
       this.player.singer = detail.ar; //{"id":13155879,"name":"霓虹花园","tns":[],"alias":[]}
       this.player.name = detail.name;
       this.player.pic = detail.al.picUrl;
-      this.player.url = (await this.getUrl(this.player.ids[this.player.index])).url;
+      this.player.url = (
+        await this.getUrl(this.player.ids[this.player.index])
+      ).url;
       audio.loop = false;
       audio.src = this.player.url;
       audio.volume = this.player.volume / 100;
       audio.play();
       this.player.status = 1;
-      lyric.onMessage(1, await this.getLyric(this.player.ids[this.player.index]));
+      lyric.onMessage(
+        1,
+        await this.getLyric(this.player.ids[this.player.index])
+      );
     },
     last() {
       if (this.player.index == 0) {
@@ -373,10 +421,11 @@ export default {
       this.playSong();
     },
     async setup() {
-      let win = await window.native.window.createWindow(location.origin);
-      win.data.page = "/setup";
-      win.icon=icon;
-      win.show(true, () => {});
+      setup.showCenter();
+      setup.show(true, () => {});
+      setTimeout(async () => {
+        setup.width = (await setup.width) == 500 ? 501 : 500;
+      }, 100);
     },
     skipProgress() {
       this.dragProgress(this.player.progress);
@@ -384,11 +433,6 @@ export default {
     readConfig() {
       this.config.refresh();
       window.native.window.allowClose = this.config.exit;
-      if (this.config.lyric) {
-        lyric.show();
-      } else {
-        lyric.hide();
-      }
     },
   },
 };

@@ -2,7 +2,7 @@
 node_modules
 /dist
 
-/bin/WebUI.exe.WebView2
+/bin/*.WebView2
 # local env files
 .env.local
 .env.*.local

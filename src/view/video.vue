@@ -28,16 +28,12 @@ export default {
       windowHeight: 0,
     };
   },
-  setup() {
-    window.native.window.width = 800;
-    window.native.window.addDragMoveArea(0, 0, 800, 40);
-  },
+  setup() {},
   async mounted() {
     video = document.getElementById("video");
     video.addEventListener("webkitfullscreenchange", this.fullscreen);
     video.addEventListener("fullscreenchange", this.fullscreen);
-    this.src = await window.native.window.data.src;
-    this.title = (await window.native.window.title) || "Som Music";
+
     video.addEventListener("canplay", () => {
       this.resize();
     });
@@ -47,6 +43,20 @@ export default {
       console.log(e);
       this.windowHeight = document.getElementById("app").offsetHeight;
     }).observe(document.getElementById("app"));
+    window.native.window.addDragMoveArea(
+      0,
+      0,
+      await window.native.window.width,
+      40
+    );
+    window.native.window.onVisible(async (e) => {
+      if (e) {
+        this.src = await window.native.window.data.src;
+        this.title = (await window.native.window.title) || "Som Music";
+      }else{
+        video.pause();
+      }
+    });
   },
   methods: {
     fullscreen() {
@@ -65,7 +75,7 @@ export default {
       console.log(video.offsetHeight);
     },
     close() {
-      window.native.window.close();
+      window.native.window.hide();
     },
     max() {
       window.native.window.state = "max";

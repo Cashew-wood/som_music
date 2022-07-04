@@ -12,30 +12,12 @@
       </div>
     </div>
     <div class="title color_main">歌曲</div>
-    <div class="row color_secondary">
-      <span class="num col">序号</span>
-      <span class="name col">标题</span>
-      <span class="singer col">歌手</span>
-    </div>
-    <div class="song-list">
-      <div class="list scroll">
-        <div
-          class="row color_main select h"
-          :class="{ a: player.ids[player.index] == song.id }"
-          v-for="(song, index) in songList"
-          :key="index"
-          @click="play(song)"
-        >
-          <span class="num col">{{ index + 1 }}</span>
-          <span class="name col tx a">{{ song.name }}</span>
-          <span class="singer col">{{ song.ar.map((e) => e.name).join() }}</span>
-        </div>
-      </div>
-    </div>
+    <SongListVue :songList="songList" @play="play"></SongListVue>
   </div>
 </template>
 
 <script>
+import SongListVue from '../../components/SongList.vue';
 export default {
   data() {
     return {
@@ -48,6 +30,9 @@ export default {
       },
       loading: false,
     };
+  },
+  components:{
+    SongListVue
   },
   async mounted() {
     this.id = this.$route.query.id;
@@ -69,20 +54,7 @@ export default {
     },
     play(item) {
       this.$parent.$parent.openSong(item.id);
-    },
-    async scroll(e) {
-      if (
-        e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight * 0.8 &&
-        !this.loading
-      ) {
-        this.loading = true;
-        this.page.offset++;
-        this.songList = this.songList.concat(await this.geSongs());
-        setTimeout(() => {
-          this.loading = false;
-        }, 100);
-      }
-    },
+    }
   },
 };
 </script>
@@ -98,6 +70,7 @@ export default {
     top: 0;
     left: 222px;
     opacity: 0.2;
+
     .img {
       width: 100%;
     }
@@ -108,9 +81,11 @@ export default {
     top: 180px;
     left: 250px;
     right: 40px;
+
     .name {
       font-size: 36px;
     }
+
     .desc {
       font-size: 14px;
       margin-top: 10px;
@@ -121,40 +96,6 @@ export default {
     font-size: 18px;
     margin-top: 260px;
   }
-
-  .song-list {
-    position: relative;
-    flex: 1;
-
-    .list {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      overflow-y: scroll;
-    }
-  }
 }
 
-.row {
-  display: flex;
-
-  .num {
-    width: 80px;
-    text-align: center;
-  }
-
-  .name,
-  .singer {
-    flex: 1;
-  }
-
-  .col {
-    box-sizing: border-box;
-    padding: 10px;
-  }
-}
 </style>

@@ -92,10 +92,6 @@ export default {
     };
   },
   setup() {
-    window.native.window.width = 500;
-    window.native.window.height = 700;
-    window.native.window.showCenter();
-    window.native.window.title = '设置';
   },
   async mounted() {
     window.native.window.addDragMoveArea(0, 0, await window.native.window.width, 40);
@@ -147,6 +143,7 @@ export default {
   --color-split-line-deep: rgb(${this.increaseColor(color, "153,153,153")});
   --color-text-btn-primary:rgb(${this.increaseColor(color, "66,66,67")});
   --color-border-primary: rgb(${this.increaseColor(bgcolor, "40,40,40")});
+  --color-border-deep: rgb(${this.increaseColor(bgcolor, "80,80,80")});
   --color-button-full: rgb(${this.increaseColor(bgcolor, "16,16,16", true)});
 }`;
       localStorage.setItem("theme", css);
@@ -175,7 +172,7 @@ export default {
     },
     setWindowState(state) {
       if (state == "close") {
-        window.native.window.close();
+        window.native.window.hide();
       }
     },
   },

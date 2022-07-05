@@ -8,10 +8,10 @@
             <button class="" :class="{ 'full': filter.area == 16 }" @click="setValue('area', 16)">韩国</button>
         </div>
         <div class="row">
-            <button class="full" :class="{ 'full': filter.type == -1 }" @click="setValue('type', 16)">全部</button>
-            <button class="" :class="{ 'full': filter.type == 1 }" @click="setValue('type', 16)">男</button>
-            <button class="" :class="{ 'full': filter.type == 2 }" @click="setValue('type', 16)">女</button>
-            <button class="" :class="{ 'full': filter.type == 3 }" @click="setValue('type', 16)">组合</button>
+            <button class="" :class="{ 'full': filter.type == -1 }" @click="setValue('type', -1)">全部</button>
+            <button class="" :class="{ 'full': filter.type == 1 }" @click="setValue('type', 1)">男</button>
+            <button class="" :class="{ 'full': filter.type == 2 }" @click="setValue('type', 2)">女</button>
+            <button class="" :class="{ 'full': filter.type == 3 }" @click="setValue('type', 3)">组合</button>
         </div>
         <div class="row">
             <span class="btn select h" @click="setValue('initial', '')" :class="{'a':!filter.initial}">全部</span>

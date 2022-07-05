@@ -132,10 +132,10 @@ $color_deep:#999;
 button {
   background-color: transparent;
   color: var(--color-text-primary);
-  border: 1px solid var(--color-button-full);
+  border: 1px solid var(--color-border-primary);
 
   &:hover {
-    box-shadow: 0 0 5pxvar(--color-button-full);
+    box-shadow: 0 0 5px var(--color-border-primary);
   }
 
   &.full {

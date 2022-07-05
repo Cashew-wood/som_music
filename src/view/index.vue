@@ -163,10 +163,10 @@
 
 <script>
 //import HelloWorld from './components/HelloWorld.vue'
-const audio = new Audio();
+let audio = new Audio();
 import SearchBox from "../components/SearchBox.vue";
-// import { message } from 'element-plus'
-import icon from '../static/img/logo.png'
+import { ElMessageBox } from "element-plus";
+import icon from "../static/img/logo.png";
 let lyric;
 let audioId;
 let menu;
@@ -229,22 +229,26 @@ export default {
         }
       }
     );
-    window.native.window.createWindow(location.origin+'#setup').then((win) => {
-      win.title = "设置";
-      win.icon = icon;
-      win.width = 500;
-      win.height = 700;
-      setup = win;
-    });
+    window.native.window
+      .createWindow(location.origin + "#setup")
+      .then((win) => {
+        win.title = "设置";
+        win.icon = icon;
+        win.width = 500;
+        win.height = 700;
+        setup = win;
+      });
 
-    window.native.window.createWindow(location.origin+'#lyric').then((win) => {
-      win.title = "歌词";
-      win.showInTaskbar = false;
-      win.topmost = true;
-      if (this.config.lyric) win.show(false);
-      lyric = win;
-    });
-    window.native.window.createWindow(location.origin+'#menu').then((win) => {
+    window.native.window
+      .createWindow(location.origin + "#lyric")
+      .then((win) => {
+        win.title = "歌词";
+        win.showInTaskbar = false;
+        win.topmost = true;
+        if (this.config.lyric) win.show(false);
+        lyric = win;
+      });
+    window.native.window.createWindow(location.origin + "#menu").then((win) => {
       win.title = "菜单";
       win.showInTaskbar = false;
       win.show(false);
@@ -273,9 +277,38 @@ export default {
         }
       }
     };
-    window.addEventListener('drag',({detail})=>{
-        console.log(detail)
-    })
+    this.loadLocalMusic();
+    window.addEventListener("drag", async ({ detail }) => {
+      console.log(detail);
+      let path = detail.path;
+      let info = await window.native.io.info(detail.path);
+      console.log(info);
+      if (!info) return;
+      let loadFile = (file) => {
+        this.localFile.unshift({
+          id: "local_" + this.uid(),
+          name: file.name.substring(0, file.name.indexOf(".")),
+          time: Date.now(),
+          size:
+            file.size < 1024
+              ? file.size + "B"
+              : file.size < 1048576
+              ? (file.size / 1024).toFixed(1) + "KB"
+              : (file.size / 1048576).toFixed(1) + "MB",
+          path: file.absolutePath,
+        });
+      };
+      if (info.isFile) {
+        loadFile(info);
+      } else {
+        let files = await window.native.io.files(detail.path);
+        for (let file of files) {
+          loadFile(file);
+        }
+      }
+
+      this.storage.set("local_music", this.localFile);
+    });
     this.readConfig();
   },
   methods: {
@@ -287,6 +320,8 @@ export default {
         this.$router.to("/index/default");
       } else if (index == 1) {
         this.$router.to("/index/mv");
+      } else if (index == 2) {
+        this.$router.to("/index/local");
       }
       this.menuSelect = index;
     },
@@ -325,13 +360,12 @@ export default {
         this.player.status = 2;
         audio.pause();
         clearInterval(audioId);
-      } else if (this.play.status == 2) {
+      } else if (this.player.status == 2) {
         if (audio.currentTime != 0 && audio.currentTime == audio.duration) {
           audio.currentTime = 0;
         }
         this.player.status = 1;
         audio.play();
-        audioId = setInterval(this.updateAudio, 30);
       }
     },
     updateAudio() {
@@ -353,10 +387,14 @@ export default {
       this.player.progress = parseInt(
         (audio.currentTime / audio.duration) * 2000
       );
-      lyric.onMessage(0, {
-        current: audio.currentTime,
-        duration: audio.duration,
-      });
+      let id = this.player.ids[this.player.index];
+      if (typeof id != "string" || !id.startsWith("local_")) {
+        lyric.onMessage(0, {
+          current: audio.currentTime,
+          duration: audio.duration,
+        });
+      }
+
       if (audio.currentTime == audio.duration && this.player.status == 1) {
         clearInterval(audioId);
         this.next();
@@ -386,22 +424,48 @@ export default {
       console.log(this.player);
     },
     async playSong() {
-      let detail = await this.getSongDetail(this.player.ids[this.player.index]);
-      this.player.singer = detail.ar; //{"id":13155879,"name":"霓虹花园","tns":[],"alias":[]}
-      this.player.name = detail.name;
-      this.player.pic = detail.al.picUrl;
-      this.player.url = (
-        await this.getUrl(this.player.ids[this.player.index])
-      ).url;
-      audio.loop = false;
-      audio.src = this.player.url;
+      let id = this.player.ids[this.player.index];
+      if (typeof id == "string" && id.startsWith("local_")) {
+        let detail =
+          this.localFile[this.localFile.findIndex((e) => e.id == id)];
+        if ((await window.native.io.exists(detail.path)) != 1) {
+          ElMessageBox.alert("文件已失效。", "提示", {
+            confirmButtonText: "确定",
+            callback: (action) => {
+              this.player.ids.splice(this.player.index, 1);
+              this.localFile.splice(
+                this.localFile.findIndex((e) => e.id == id),
+                1
+              );
+            },
+          });
+          return;
+        }
+        this.player.singer = ""; //{"id":13155879,"name":"霓虹花园","tns":[],"alias":[]}
+        this.player.name = detail.name;
+        this.player.pic = null;
+        this.player.url = null;
+        let base64 = await window.native.io.readToBase64(detail.path);
+        audio.src = "data:audio/mp3;base64," + base64;
+        lyric.onMessage(-1);
+      } else {
+        let detail = await this.getSongDetail(id);
+        this.player.singer = detail.ar; //{"id":13155879,"name":"霓虹花园","tns":[],"alias":[]}
+        this.player.name = detail.name;
+        this.player.pic = detail.al.picUrl;
+        this.player.url = (
+          await this.getUrl(this.player.ids[this.player.index])
+        ).url;
+        audio.loop = false;
+        audio.src = this.player.url;
+        lyric.onMessage(
+          1,
+          await this.getLyric(this.player.ids[this.player.index])
+        );
+      }
       audio.volume = this.player.volume / 100;
       audio.play();
       this.player.status = 1;
-      lyric.onMessage(
-        1,
-        await this.getLyric(this.player.ids[this.player.index])
-      );
     },
     last() {
       if (this.player.index == 0) {
@@ -433,6 +497,14 @@ export default {
     readConfig() {
       this.config.refresh();
       window.native.window.allowClose = this.config.exit;
+    },
+    async loadLocalMusic() {
+      let files = this.storage.get("local_music") || [];
+      for (let file of files) {
+        if ((await window.native.io.exists(file.path)) == 1) {
+          this.localFile.push(file);
+        }
+      }
     },
   },
 };

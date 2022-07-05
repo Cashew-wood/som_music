@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="title color_main">歌曲</div>
-    <SongListVue :songList="songList" @play="play"></SongListVue>
+    <SongListVue :songList="songList" @play="play" :next="nextPage"></SongListVue>
   </div>
 </template>
 
@@ -47,6 +47,10 @@ export default {
   methods: {
     async getDetail() {
       return (await this.$axios.get("/playlist/detail?id=" + this.id)).data;
+    },
+    async nextPage(){
+      this.page.offset++;
+      this.songList=this.songList.concat(await this.geSongs());
     },
     async geSongs() {
       return (

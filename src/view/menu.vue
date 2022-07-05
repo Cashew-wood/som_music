@@ -51,7 +51,7 @@ export default {
     window.native.window.onDeactivated(() => {
       this.show = false;
     });
-    window.native.window.addGlobalMouseEvent((type, button, x, y) => {
+    window.native.device.mouse.addGlobalEvent((type, button, x, y) => {
       if (
         type > -1 &&
         type != 5 &&
@@ -63,8 +63,8 @@ export default {
       }
     });
     setTimeout(() => {
-      window.native.window.initGlobalMouseEvent();
-    }, 5000);
+      window.native.device.mouse.initGlobalEvent();
+    }, 2000);
   },
   methods: {
     selectItem(i) {

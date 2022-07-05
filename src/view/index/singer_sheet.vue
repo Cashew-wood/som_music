@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="title color_main">歌曲</div>
-    <SongListVue :songList="songList" @play="play"></SongListVue>
+    <SongListVue :songList="songList" @play="play" :next="nextPage"></SongListVue>
   </div>
 </template>
 
@@ -29,6 +29,7 @@ export default {
         limit: 50,
       },
       loading: false,
+      
     };
   },
   components:{
@@ -43,6 +44,10 @@ export default {
     this.songList = await this.geSongs();
   },
   methods: {
+    async nextPage(){
+      this.page.offset++;
+      this.songList=this.songList.concat(await this.geSongs());
+    },
     async getDetail() {
       return (await this.$axios.get(`/artist/detail?id=${this.id}`)).data.data.artist;
     },

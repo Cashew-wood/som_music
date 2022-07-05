@@ -11,6 +11,8 @@ import mv from './view/index/mv.vue'
 import video from './view/video.vue'
 import setup from './view/setup.vue'
 import menu from './view/menu.vue'
+import search from './view/index/search.vue'
+import local from './view/index/local.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [{
     path: '/index', component: index,
@@ -39,6 +41,12 @@ const routes = [{
     }, {
         path: 'mv',
         component: mv
+    }, {
+        path: 'search',
+        component: search
+    }, {
+        path: 'local',
+        component: local
     }]
 }, {
     path: '/lyric', component: lyric,

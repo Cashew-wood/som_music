@@ -50,11 +50,16 @@ export default {
       window.native.window.addDragMoveArea(0, 0, 2000, 2000);
       window.native.window.hideInTaskView();
       window.native.window.onMessage = (type, data) => {
-        if (type == 0) {
+        if (type == -1) {
+          lyric = defaultDisplay;
+          lyricIndex = 0;
+          this.setFont();
+        } else if (type == 0) {
           current = data.current * 1000;
           duration = data.duration * 1000;
           this.draw();
         } else if (type == 1) {
+          lyricIndex = 0;
           this.setLyric(data);
         } else if (type == 10) {
           this.config.refresh();

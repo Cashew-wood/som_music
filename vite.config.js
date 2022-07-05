@@ -22,7 +22,7 @@ export default defineConfig({
   }),{
     closeBundle:(e)=>{
         let dist=import.meta.url.substring(8,import.meta.url.lastIndexOf("/")).replaceAll('/','\\')+'\\dist';
-       execFile('bin\\WebUIBuild.exe', ['res='+dist,'icon={index}','name=Som 音乐','embedded','output='+dist+'\\build','app.company=Som',
+       execFile('bin\\SepoBuild.exe', ['res='+dist,'icon={index}','name=Som 音乐','embedded','output='+dist+'\\build','app.company=Som',
       'app.product=Music','app.copyright=Som','app.trademark=Som','app.version=1.0.0.1'], (error, stdout, stderr) => {
           console.log(error,stdout,stderr)
         });
@@ -32,7 +32,7 @@ export default defineConfig({
       if(execute)execute=false;
       else return;
       let doneFn=()=>{
-        execFile('bin\\WebUIProgram.exe', [`http://localhost:${e.config.server.port || 3000}`,0,2], (error, stdout, stderr) => {
+        execFile('bin\\SepoProgram.exe', [`http://localhost:${e.config.server.port || 3000}`,0,2], (error, stdout, stderr) => {
           console.log(error,stdout,stderr)
         });
       }

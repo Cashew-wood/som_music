@@ -23,6 +23,7 @@
 export default {
     props: {
         songList: Array,
+        next:Function
     },
     methods: {
         async scroll(e) {
@@ -31,8 +32,7 @@ export default {
                 !this.loading
             ) {
                 this.loading = true;
-                this.page.offset++;
-                this.songList = this.songList.concat(await this.geSongs());
+                this.next && (await this.next())
                 setTimeout(() => {
                     this.loading = false;
                 }, 100);
@@ -48,7 +48,7 @@ export default {
     }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped >
 .song-list-main {
     flex: 1;
     display: flex;

@@ -25,12 +25,28 @@ app.config.globalProperties.player = reactive({
     duration: '00:00',
     volume: 100
 });
+app.config.globalProperties.localFile = reactive([])
+app.config.globalProperties.uid = () => {
+    let s = Date.now().toString(36) + '?';
+    for (let i = 0; i < 8; i++) {
+        s += parseInt(Math.random() * 36).toString(36);
+    }
+    return s;
+}
+app.config.globalProperties.dateTime = (val) => {
+    if (typeof val == 'string') {
+        val = parseInt(val);
+    }
+    let d = new Date(val);
+    return `${d.getFullYear()}-${((d.getMonth() + 1).toString()).padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`
+}
 app.config.globalProperties.storage = {
     set(key, value) {
         localStorage.setItem(key, JSON.stringify(value))
     },
     get(key) {
-        return JSON.parse(localStorage.getItem(key))
+        let val = localStorage.getItem(key);
+        return val ? JSON.parse(localStorage.getItem(key)) : null;
     }
 }
 let config = reactive({});
@@ -42,12 +58,12 @@ app.config.globalProperties.config = new Proxy(config, {
         lyric: true,
         lyricFont: '微软雅黑',
         lyricFontSize: 48,
-        lyricShadowColor:'#000000',
-        lyricShadowSize:5,
-        lyricForeground:'#005AFF',
-        lyricBackground:'#86A8E7'
+        lyricShadowColor: '#000000',
+        lyricShadowSize: 5,
+        lyricForeground: '#005AFF',
+        lyricBackground: '#86A8E7'
     },
-    setup:false,
+    setup: false,
     get(target, propertity) {
         if (propertity == 'refresh') {
             return () => {
@@ -57,8 +73,8 @@ app.config.globalProperties.config = new Proxy(config, {
                         target[p] = config[p];
                 }
             }
-        }else if(propertity == "setSetup"){
-            return ()=>{
+        } else if (propertity == "setSetup") {
+            return () => {
                 this.setup = true;
             }
         }
@@ -74,7 +90,7 @@ app.config.globalProperties.config = new Proxy(config, {
     set(target, propertity, val) {
         target[propertity] = val;
         app.config.globalProperties.storage.set('config', target);
-        this.setup && window.native.window.parent.onMessage({ source: "setup", type: 0});
+        this.setup && window.native.window.parent.onMessage({ source: "setup", type: 0 });
         return true;
     }
 })

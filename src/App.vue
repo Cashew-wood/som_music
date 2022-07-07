@@ -8,7 +8,8 @@ export default {
   mounted() {
     let theme = document.createElement("style");
     document.body.appendChild(theme);
-    theme.innerHTML = localStorage.getItem("theme");
+    let css= localStorage.getItem("theme") || this.getTheme('255,255,255','0,0,0');
+    theme.innerHTML = css;
     let root = document.querySelector("html");
     root.setAttribute("class", "theme");
     window.addEventListener("config", () => {

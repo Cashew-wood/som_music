@@ -6,31 +6,6 @@ $bg_color_light:#eee;
 $bg_color_tint:#ccc;
 $color_deep:#999;
 
-:root {
-  --color-text-primary: rgb(0,0,0);
-  --color-text-tinit: rgb(66,66,67);
-  --color-bg-primary: rgba(255, 255, 255, 0.95);
-  --color-bg-light : rgb(220, 220, 220);
-  --color-bg-shadow: rgba(225, 225, 225, 0.95);
-  --color-search-bg: rgba(204, 204, 204, 0.3);
-  --color-scroll-bg: rgba(153, 153, 153, 0.1);
-  --color-scroll-slider: rgba(153, 153, 153, 0.2);
-  --color-progress-bg: rgb(238,238,238);
-  --color-progress-slider: rgb(204, 204, 204);
-  --color-progress-dot: rgb(153, 153, 153);
-  --color-select-hover: rgba(153, 153, 153, 0.15);
-  --color-select-active: rgba(153, 153, 153, 0.3);
-  --color-panel-shadow: rgba(0, 0, 0, 0.5);
-  --color-volume-progress-bg: rgb(238,238,238);
-  --color-volume-progress-slider: rgba(255, 255, 255, 0.5);
-  --color-split-line-tint: rgb(204, 204, 204)
-  --color-split-line-deep: rgb(153, 153, 153);
-  --color-text-btn-primary: #424243;
-  --color-border-primary: #ccc;
-  --color-border-deep:#eee;
-  --color-button-full: rgb(239,239,239);
-}
-
 .main_bg {
   background-color: var(--color-bg-primary);
   box-shadow: 0 0 10px var(--color-bg-shadow);
@@ -155,6 +130,11 @@ button {
 
 .border {
   border: 1px solid var(--color-border-primary);
+}
+.el-popper {
+  background: transparent !important;
+  border: none;
+  padding: 0;
 }
 
 .el-radio{

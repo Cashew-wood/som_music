@@ -165,12 +165,12 @@
 //import HelloWorld from './components/HelloWorld.vue'
 let audio = new Audio();
 import SearchBox from "../components/SearchBox.vue";
-import { ElMessageBox } from "element-plus";
 import icon from "../static/img/logo.png";
 let lyric;
 let audioId;
 let menu;
 let setup;
+let alert;
 export default {
   name: "App",
   components: {
@@ -251,9 +251,14 @@ export default {
     window.native.window.createWindow(location.origin + "#menu").then((win) => {
       win.title = "菜单";
       win.showInTaskbar = false;
-      win.show(false);
       menu = win;
     });
+    window.native.window
+      .createWindow(location.origin + "#alert")
+      .then((win) => {
+        win.showInTaskbar = false;
+        alert = win;
+      });
 
     window.addEventListener("invoke", (e) => {
       let data = e.detail;
@@ -280,11 +285,12 @@ export default {
     this.loadLocalMusic();
     window.addEventListener("drag", async ({ detail }) => {
       console.log(detail);
-      let path = detail.path;
       let info = await window.native.io.info(detail.path);
       console.log(info);
       if (!info) return;
       let loadFile = (file) => {
+        if (this.localFile.findIndex((e) => e.path == file.absolutePath) > -1)
+          return;
         this.localFile.unshift({
           id: "local_" + this.uid(),
           name: file.name.substring(0, file.name.indexOf(".")),
@@ -429,15 +435,12 @@ export default {
         let detail =
           this.localFile[this.localFile.findIndex((e) => e.id == id)];
         if ((await window.native.io.exists(detail.path)) != 1) {
-          ElMessageBox.alert("文件已失效。", "提示", {
-            confirmButtonText: "确定",
-            callback: (action) => {
-              this.player.ids.splice(this.player.index, 1);
-              this.localFile.splice(
-                this.localFile.findIndex((e) => e.id == id),
-                1
-              );
-            },
+          this.alert("文件已失效。", () => {
+            this.player.ids.splice(this.player.index, 1);
+            this.localFile.splice(
+              this.localFile.findIndex((e) => e.id == id),
+              1
+            );
           });
           return;
         }
@@ -505,6 +508,22 @@ export default {
           this.localFile.push(file);
         }
       }
+    },
+    async alert(title, msg, callback) {
+      if (!msg && !callback) {
+        msg = title;
+        title = null;
+      } else if (!callback) {
+        msg = title;
+
+        title = null;
+      }
+      alert.data.value = { content: msg };
+      alert.show(true, callback);
+      let w = await alert.width;
+      setTimeout(() => {
+        alert.width = w % 10 == 0 ? w + 1 : w - 1;
+      }, 100);
     },
   },
 };
@@ -694,7 +713,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-content: center;
-
+  border-radius: 6px;
   .el-slider {
     margin-top: 20px;
   }
@@ -733,12 +752,6 @@ export default {
   .volume {
     text-align: center;
   }
-}
-
-.el-popper {
-  background: transparent;
-  border: none;
-  padding: 0;
 }
 
 .content {

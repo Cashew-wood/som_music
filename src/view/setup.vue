@@ -120,32 +120,7 @@ export default {
         5,
         this.config.bgColor.lastIndexOf(",")
       );
-      let progress = this.increaseColor(bgcolor, "15,15,15");
-      let deep = this.increaseColor(bgcolor, "60,60,60");
-      let css = `html.theme {
-  --color-text-primary: rgb(${color});
-  --color-text-tinit: rgb(${this.increaseColor(color, "66,66,67", true)});
-  --color-bg-primary: ${this.config.bgColor};
-  --color-bg-light: rgb(${this.increaseColor(bgcolor, "35,35,35", true)});
-  --color-bg-shadow: rgb(${this.increaseColor(bgcolor, "30,30,30", true)});
-  --color-search-bg: rgba(${this.increaseColor(bgcolor, "51,51,51", true)}, 0.3);
-  --color-scroll-bg: rgba(${deep}, 0.2);
-  --color-scroll-slider: rgba(${deep}, 0.4);
-  --color-progress-bg: rgb(${this.increaseColor(bgcolor, "17,17,17", true)});
-  --color-progress-slider: rgb(${this.increaseColor(color, "204,204,204", true)});
-  --color-progress-dot: rgb(${this.increaseColor(color, "153,153,153")});
-  --color-select-hover: rgba(${deep}, 0.15);
-  --color-select-active: rgba(${deep}, 0.3);
-  --color-panel-shadow: rgba(${this.increaseColor(bgcolor, "255,255,255")}, 0.5);
-  --color-volume-progress-bg: rgb(${progress});
-  --color-volume-progress-slider: rgb(${this.increaseColor(progress, "30,30,30")});
-  --color-split-line-tint: rgb(${this.increaseColor(color, "204,204,204")});
-  --color-split-line-deep: rgb(${this.increaseColor(color, "153,153,153")});
-  --color-text-btn-primary:rgb(${this.increaseColor(color, "66,66,67")});
-  --color-border-primary: rgb(${this.increaseColor(bgcolor, "40,40,40")});
-  --color-border-deep: rgb(${this.increaseColor(bgcolor, "80,80,80")});
-  --color-button-full: rgb(${this.increaseColor(bgcolor, "16,16,16", true)});
-}`;
+      let css = this.getTheme(bgcolor,color);      
       localStorage.setItem("theme", css);
 
       window.dispatchEvent(new CustomEvent("config", { detail: css }));
@@ -153,22 +128,6 @@ export default {
     tapWindow() {
       this.colorPickerShow = false;
       this.bgColorPickerShow = false;
-    },
-    increaseColor(color, rgb, reduce) {
-      let rgbs = color.split(",");
-      let rgbs1 = rgb.split(",");
-      let newRgb = [];
-      for (let i = 0; i < 3; i++) {
-        newRgb[i] = reduce
-          ? parseInt(rgbs[i]) - parseInt(rgbs1[i])
-          : parseInt(rgbs[i]) + parseInt(rgbs1[i]);
-        if (newRgb[i] < 0) {
-          newRgb[i] = Math.abs(newRgb[i]);
-        } else if (newRgb[i] > 255) {
-          newRgb[i] = parseInt(rgbs[i]) - parseInt(rgbs1[i]);
-        }
-      }
-      return newRgb.join();
     },
     setWindowState(state) {
       if (state == "close") {

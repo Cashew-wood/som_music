@@ -1,5 +1,5 @@
 <template>
-  <div class="menu_main main_bg" v-show="show">
+  <div class="menu_main main_bg">
     <div
       class="item color_main select h"
       v-for="(text, i) in items"
@@ -15,20 +15,9 @@ let left, top, width, height;
 export default {
   data() {
     return {
-      show: false,
       items: ["打开主页面", "设置", "退出"],
+      interval: 0,
     };
-  },
-  watch: {
-    show(n, o) {
-      if (n) {
-        window.native.window.topmost = true;
-      } else {
-        //clearInterval(id);
-        window.native.window.topmost = false;
-        console.log("hide");
-      }
-    },
   },
   async mounted() {
     if (window.native && window.native.isInit) {
@@ -51,28 +40,28 @@ export default {
           top = value.y - height;
           window.native.window.left = left;
           window.native.window.top = top;
-          this.show = true;
+          this.interval = Date.now();
+          window.native.window.show(false);
         } else if (type == 10) {
           window.dispatchEvent(new CustomEvent("config"));
         }
       };
-      window.native.window.onDeactivated(() => {
-        this.show = false;
-      });
       window.native.device.mouse.addGlobalEvent((type, button, x, y) => {
         if (
           type > -1 &&
           type != 5 &&
           (left > x || left + width < x || top > y || top + height < y)
         ) {
-          this.show = false;
+          if (Date.now() - this.interval > 500) {
+            window.native.window.hide();
+          }
         } else if (type == 0) {
           console.log(x, x);
         }
       });
       setTimeout(() => {
         window.native.device.mouse.initGlobalEvent();
-      }, 2000);
+      }, 1000);
     },
     selectItem(i) {
       window.native.window.parent.onMessage({
@@ -80,7 +69,6 @@ export default {
         type: 0,
         value: i,
       });
-      this.show = false;
     },
   },
 };

@@ -158,11 +158,11 @@ export default {
       this.search();
     },
     blurEvent() {
-      // setTimeout(() => {
-      //   this.focus = false;
-      //   this.hotShow = false;
-      //   this.proposeShow = false;
-      // }, 200);
+      setTimeout(() => {
+        this.focus = false;
+        this.hotShow = false;
+        this.proposeShow = false;
+      }, 200);
     },
   },
 };

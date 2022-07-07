@@ -26,6 +26,50 @@ app.config.globalProperties.player = reactive({
     volume: 100
 });
 app.config.globalProperties.localFile = reactive([])
+app.config.globalProperties.getTheme = (bgcolor, color) => {
+    function increaseColor(color, rgb, reduce) {
+      let rgbs = color.split(",");
+      let rgbs1 = rgb.split(",");
+      let newRgb = [];
+      for (let i = 0; i < 3; i++) {
+        newRgb[i] = reduce
+          ? parseInt(rgbs[i]) - parseInt(rgbs1[i])
+          : parseInt(rgbs[i]) + parseInt(rgbs1[i]);
+        if (newRgb[i] < 0) {
+          newRgb[i] = Math.abs(newRgb[i]);
+        } else if (newRgb[i] > 255) {
+          newRgb[i] = parseInt(rgbs[i]) - parseInt(rgbs1[i]);
+        }
+      }
+      return newRgb.join();
+    }
+    let progress = increaseColor(bgcolor, "30,30,30");
+    let deep = increaseColor(bgcolor, "60,60,60");
+    return `html.theme {
+--color-text-primary: rgb(${color});
+--color-text-tinit: rgb(${increaseColor(color, "66,66,67", true)});
+--color-bg-primary: ${app.config.globalProperties.config.bgColor};
+--color-bg-light: rgb(${increaseColor(bgcolor, "35,35,35", true)});
+--color-bg-shadow: rgb(${increaseColor(bgcolor, "30,30,30", true)});
+--color-search-bg: rgba(${increaseColor(bgcolor, "51,51,51", true)}, 0.3);
+--color-scroll-bg: rgba(${deep}, 0.2);
+--color-scroll-slider: rgba(${deep}, 0.4);
+--color-progress-bg: rgb(${increaseColor(bgcolor, "17,17,17", true)});
+--color-progress-slider: rgb(${increaseColor(color, "204,204,204", true)});
+--color-progress-dot: rgb(${increaseColor(color, "153,153,153")});
+--color-select-hover: rgba(${deep}, 0.15);
+--color-select-active: rgba(${deep}, 0.3);
+--color-panel-shadow: rgba(${increaseColor(bgcolor, "255,255,255")}, 0.5);
+--color-volume-progress-bg: rgb(${progress});
+--color-volume-progress-slider: rgb(${increaseColor(progress, "30,30,30")});
+--color-split-line-tint: rgb(${increaseColor(color, "204,204,204")});
+--color-split-line-deep: rgb(${increaseColor(color, "153,153,153")});
+--color-text-btn-primary:rgb(${increaseColor(color, "66,66,67")});
+--color-border-primary: rgb(${increaseColor(bgcolor, "40,40,40")});
+--color-border-deep: rgb(${increaseColor(bgcolor, "80,80,80")});
+--color-button-full: rgb(${increaseColor(bgcolor, "16,16,16", true)});
+}`;
+}
 app.config.globalProperties.uid = () => {
     let s = Date.now().toString(36) + '?';
     for (let i = 0; i < 8; i++) {

@@ -13,6 +13,7 @@ import setup from './view/setup.vue'
 import menu from './view/menu.vue'
 import search from './view/index/search.vue'
 import local from './view/index/local.vue'
+import alert from './view/alert.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [{
     path: '/index', component: index,
@@ -58,6 +59,9 @@ const routes = [{
 }, {
     path: '/menu',
     component: menu
+}, {
+    path: '/alert',
+    component: alert
 }]
 const router = createRouter({
     history: createWebHashHistory(),

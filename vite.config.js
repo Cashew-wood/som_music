@@ -32,7 +32,7 @@ export default defineConfig({
       if(execute)execute=false;
       else return;
       let doneFn=()=>{
-        execFile('bin\\SepoProgram.exe', [`http://localhost:${e.config.server.port || 3000}`,0,2], (error, stdout, stderr) => {
+        execFile('bin\\SepoProgram.exe', [`http://localhost:${e.config.server.port || 3000}`], (error, stdout, stderr) => {
           console.log(error,stdout,stderr)
         });
       }

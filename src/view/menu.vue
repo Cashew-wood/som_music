@@ -33,7 +33,7 @@ export default {
       window.native.window.width = width;
       window.native.window.height = height;
       window.native.window.hideInTaskView();
-      window.native.window.onMessage = (type, value) => {
+      window.native.window.onMessage = async (type, value) => {
         console.log(value);
         if (type == 0) {
           left = value.x - width / 2;
@@ -42,6 +42,9 @@ export default {
           window.native.window.top = top;
           this.interval = Date.now();
           window.native.window.show(false);
+          window.native.window.topmost=true;
+          width = width == 180 ? width + 1 : width - 1;
+          window.native.window.width = width;
         } else if (type == 10) {
           window.dispatchEvent(new CustomEvent("config"));
         }

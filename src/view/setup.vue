@@ -42,6 +42,24 @@
           </el-radio-group>
         </div>
       </div>
+      <div class="row">
+        <div class="item">
+          <el-checkbox
+            v-model="config.defaultPlayer"
+            label="设为默认播放器"
+            size="large"
+            @change="defaultPlayer"
+          />
+        </div>
+        <div class="item">
+          <el-checkbox
+            v-model="config.startup"
+            label="开机启动"
+            size="large"
+            @change="startup"
+          />
+        </div>
+      </div>
       <div class="title color_main">歌词</div>
       <div class="row">
         <div class="item">
@@ -55,24 +73,39 @@
         <div class="item">
           <span class="color_main">字体：</span>
           <el-select v-model="config.lyricFont" class>
-            <el-option v-for="item in fonts" :key="item" :label="item" :value="item" />
+            <el-option
+              v-for="item in fonts"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
           </el-select>
         </div>
       </div>
       <div class="row">
         <div class="item">
           <span class="color_main">字号：</span>
-          <el-input-number v-model="config.lyricFontSize" :min="36" :max="128" />
+          <el-input-number
+            v-model="config.lyricFontSize"
+            :min="36"
+            :max="128"
+          />
         </div>
       </div>
       <div class="row">
         <div class="item">
           <span class="color_main">前景色：</span>
-          <el-color-picker v-model="config.lyricForeground" color-format="hex" />
+          <el-color-picker
+            v-model="config.lyricForeground"
+            color-format="hex"
+          />
         </div>
         <div class="item">
           <span class="color_main">背景色：</span>
-          <el-color-picker v-model="config.lyricBackground" color-format="hex" />
+          <el-color-picker
+            v-model="config.lyricBackground"
+            color-format="hex"
+          />
         </div>
       </div>
     </ScrollListVue>
@@ -91,10 +124,14 @@ export default {
       fonts: [],
     };
   },
-  setup() {
-  },
+  setup() {},
   async mounted() {
-    window.native.window.addDragMoveArea(0, 0, await window.native.window.width, 40);
+    window.native.window.addDragMoveArea(
+      0,
+      0,
+      await window.native.window.width,
+      40
+    );
     this.fonts = await window.native.system.fonts;
     this.config.setSetup();
   },
@@ -115,12 +152,15 @@ export default {
     },
     preview() {
       console.log(this.config.bgColor);
-      let color = this.config.color.substring(4, this.config.color.lastIndexOf(")"));
+      let color = this.config.color.substring(
+        4,
+        this.config.color.lastIndexOf(")")
+      );
       let bgcolor = this.config.bgColor.substring(
         5,
         this.config.bgColor.lastIndexOf(",")
       );
-      let css = this.getTheme(bgcolor,color);      
+      let css = this.getTheme(bgcolor, color);
       localStorage.setItem("theme", css);
 
       window.dispatchEvent(new CustomEvent("config", { detail: css }));
@@ -132,6 +172,58 @@ export default {
     setWindowState(state) {
       if (state == "close") {
         window.native.window.hide();
+      }
+    },
+    async defaultPlayer() {
+      if (this.config.defaultPlayer) {
+        let executablePath = this.global.executablePath;
+        let path = executablePath.substring(
+          0,
+          executablePath.lastIndexOf("\\")
+        );
+        await window.native.system.fileAssociation([
+          {
+            type: ".mp3",
+            name: "somMusic",
+            description: "Som 音乐",
+            icon: path + "\\icon.ico",
+            commands: [
+              { path: executablePath, command: "open" },
+              { path: executablePath, command: "play" },
+            ],
+          },
+          {
+            type: ".wav",
+            name: "somMusic",
+            description: "Som 音乐",
+            icon: path + "\\icon.ico",
+            commands: [
+              { path: executablePath, command: "open" },
+              { path: executablePath, command: "play" },
+            ],
+          },
+        ]);
+        this.checkConfig();
+      } else {
+        window.native.system.clearFileAssociation([".mp3", ".wav"]);
+      }
+    },
+    async startup() {
+      if (this.config.startup) {
+        console.log(this.global.executablePath);
+        console.log(
+          await window.native.system.createLnk(
+            this.global.executablePath,
+            "startup",
+            "Som 音乐",
+            null,
+            (await window.native.io.getPath(6)) + "\\SomMusic.lnk"
+          )
+        );
+      } else {
+        window.native.io.delete(
+          (await window.native.io.getPath(6)) + "\\SomMusic.lnk"
+        );
       }
     },
   },

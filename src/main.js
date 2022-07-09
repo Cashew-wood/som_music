@@ -28,20 +28,20 @@ app.config.globalProperties.player = reactive({
 app.config.globalProperties.localFile = reactive([])
 app.config.globalProperties.getTheme = (bgcolor, color) => {
     function increaseColor(color, rgb, reduce) {
-      let rgbs = color.split(",");
-      let rgbs1 = rgb.split(",");
-      let newRgb = [];
-      for (let i = 0; i < 3; i++) {
-        newRgb[i] = reduce
-          ? parseInt(rgbs[i]) - parseInt(rgbs1[i])
-          : parseInt(rgbs[i]) + parseInt(rgbs1[i]);
-        if (newRgb[i] < 0) {
-          newRgb[i] = Math.abs(newRgb[i]);
-        } else if (newRgb[i] > 255) {
-          newRgb[i] = parseInt(rgbs[i]) - parseInt(rgbs1[i]);
+        let rgbs = color.split(",");
+        let rgbs1 = rgb.split(",");
+        let newRgb = [];
+        for (let i = 0; i < 3; i++) {
+            newRgb[i] = reduce
+                ? parseInt(rgbs[i]) - parseInt(rgbs1[i])
+                : parseInt(rgbs[i]) + parseInt(rgbs1[i]);
+            if (newRgb[i] < 0) {
+                newRgb[i] = Math.abs(newRgb[i]);
+            } else if (newRgb[i] > 255) {
+                newRgb[i] = parseInt(rgbs[i]) - parseInt(rgbs1[i]);
+            }
         }
-      }
-      return newRgb.join();
+        return newRgb.join();
     }
     let progress = increaseColor(bgcolor, "30,30,30");
     let deep = increaseColor(bgcolor, "60,60,60");
@@ -84,6 +84,11 @@ app.config.globalProperties.dateTime = (val) => {
     let d = new Date(val);
     return `${d.getFullYear()}-${((d.getMonth() + 1).toString()).padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`
 }
+app.config.globalProperties.checkConfig = async function () {
+    console.log(this);
+    app.config.globalProperties.config.defaultPlayer = await window.native.system.fileAssociationName('.mp3') == "somMusic";
+    app.config.globalProperties.config.startup = await window.native.io.exists(await window.native.io.getPath(6) + "\\SomMusic.lnk") == 1;
+}
 app.config.globalProperties.storage = {
     set(key, value) {
         localStorage.setItem(key, JSON.stringify(value))
@@ -105,7 +110,9 @@ app.config.globalProperties.config = new Proxy(config, {
         lyricShadowColor: '#000000',
         lyricShadowSize: 5,
         lyricForeground: '#005AFF',
-        lyricBackground: '#86A8E7'
+        lyricBackground: '#86A8E7',
+        defaultPlayer: false,
+        startup: false
     },
     setup: false,
     get(target, propertity) {
@@ -138,6 +145,7 @@ app.config.globalProperties.config = new Proxy(config, {
         return true;
     }
 })
+app.config.globalProperties.global=reactive({});
 app.use(ElementPlus);
 
 app.use(router);

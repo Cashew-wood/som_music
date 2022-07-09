@@ -38,6 +38,9 @@ export default {
         width: await window.native.device.screenWidth,
         height: await window.native.device.screenHeight,
       };
+      window.native.window.title = "歌词";
+      window.native.window.showInTaskbar = false;
+      window.native.window.topmost = true;
       for (let element of document.querySelectorAll(".canvas")) {
         canvas.push(element.getContext("2d"));
       }

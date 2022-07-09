@@ -194,7 +194,7 @@ export default {
     window.native.window.icon = icon;
     window.native.window.title = "Som Music";
   },
-  async mounted() {
+  mounted() {
     this.$router.to("/index/default");
     window.native &&
       window.native.window.onResize((w, h) => {
@@ -242,9 +242,6 @@ export default {
     window.native.window
       .createWindow(location.origin + "#lyric")
       .then((win) => {
-        win.title = "歌词";
-        win.showInTaskbar = false;
-        win.topmost = true;
         if (this.config.lyric) win.show(false);
         lyric = win;
       });
@@ -282,17 +279,48 @@ export default {
         }
       }
     };
+    console.log("start load music");
     this.loadLocalMusic();
-    window.addEventListener("drag", async ({ detail }) => {
-      console.log(detail);
-      let info = await window.native.io.info(detail.path);
+    console.log("load local music:" + this.localFile.length);
+    window.addEventListener("drag", ({ detail }) => {
+      this.addLocalMusic(detail.path);
+    });
+    window.addEventListener('command',({detail})=>{
+        console.log(detail)
+        this.startArgs(detail);
+    });
+    this.checkConfig();
+    this.readConfig();
+    this.startArgs();
+  },
+  methods: {
+    async startArgs(args) {
+      args = args || await window.native.app.startArgs;
+      console.log("startup args:", args);
+      if (args.indexOf("startup") > -1) {
+        window.native.window.hide();
+      }
+      if (args.length > 0 && (await window.native.io.exists(args[0])) == 1) {
+        let id = await this.addLocalMusic(args[0]);
+        setTimeout(() => {
+          this.openSong(id);
+          setTimeout(() => {
+            if(this.player.status!=1)
+                this.openSong(id);
+          }, 750);
+        }, 1500);
+      }
+    },
+    async addLocalMusic(path) {
+      let info = await window.native.io.info(path);
       console.log(info);
       if (!info) return;
       let loadFile = (file) => {
-        if (this.localFile.findIndex((e) => e.path == file.absolutePath) > -1)
-          return;
+        let k = this.localFile.findIndex((e) => e.path == file.absolutePath);
+        if (k > -1) return this.localFile[k].id;
+        let id = "local_" + this.uid();
         this.localFile.unshift({
-          id: "local_" + this.uid(),
+          id,
           name: file.name.substring(0, file.name.indexOf(".")),
           time: Date.now(),
           size:
@@ -303,21 +331,20 @@ export default {
               : (file.size / 1048576).toFixed(1) + "MB",
           path: file.absolutePath,
         });
+        return id;
       };
+      let id;
       if (info.isFile) {
-        loadFile(info);
+        id = loadFile(info);
       } else {
         let files = await window.native.io.files(detail.path);
         for (let file of files) {
-          loadFile(file);
+          id = loadFile(file);
         }
       }
-
       this.storage.set("local_music", this.localFile);
-    });
-    this.readConfig();
-  },
-  methods: {
+      return id;
+    },
     pageTap() {
       this.volumePanel = false;
     },
@@ -514,8 +541,8 @@ export default {
         msg = title;
         title = null;
       } else if (!callback) {
+        callback = msg;
         msg = title;
-
         title = null;
       }
       alert.data.value = { content: msg };

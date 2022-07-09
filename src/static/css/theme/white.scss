@@ -136,6 +136,10 @@ button {
   border: none;
   padding: 0;
 }
+.el-select-dropdown{
+  background-color: var(--color-bg-primary);
+  box-shadow: 0 0 10px var(--color-bg-shadow);
+}
 
 .el-radio{
   color: var(--color-text-primary)

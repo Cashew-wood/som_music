@@ -50,7 +50,7 @@ app.config.globalProperties.getTheme = (bgcolor, color) => {
 --color-text-primary: rgb(${color});
 --color-text-tinit: rgb(${increaseColor(color, "66,66,67", true)});
 --color-bg-primary: ${app.config.globalProperties.config.bgColor};
---color-bg-light: rgb(${increaseColor(bgcolor, "35,35,35", true)});
+--color-bg-light: rgb(${increaseColor(bgcolor, "15,15,15", true)});
 --color-bg-shadow: rgb(${increaseColor(bgcolor, "30,30,30", true)});
 --color-search-bg: rgba(${increaseColor(bgcolor, "51,51,51", true)}, 0.3);
 --color-scroll-bg: rgba(${deep}, 0.2);
@@ -60,7 +60,6 @@ app.config.globalProperties.getTheme = (bgcolor, color) => {
 --color-progress-dot: rgb(${increaseColor(color, "153,153,153")});
 --color-select-hover: rgba(${deep}, 0.15);
 --color-select-active: rgba(${deep}, 0.3);
---color-panel-shadow: rgba(${increaseColor(bgcolor, "255,255,255")}, 0.5);
 --color-volume-progress-bg: rgb(${progress});
 --color-volume-progress-slider: rgb(${increaseColor(progress, "30,30,30")});
 --color-split-line-tint: rgb(${increaseColor(color, "204,204,204")});

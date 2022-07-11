@@ -23,8 +23,8 @@
             :key="i"
             @click="selectPropose(item.searchWord)"
           >
-            <span class="left">{{ item.searchWord }}</span>
-            <span class="right">{{ item.score }}</span>
+            <span class="left color_main">{{ item.searchWord }}</span>
+            <span class="right color_main">{{ item.score }}</span>
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
             :key="i"
             @click="selectPropose(item)"
           >
-            <span class="left">{{ item }}</span>
+            <span class="left color_main">{{ item }}</span>
           </div>
           <div class="row color_secondary" v-if="!searchHistory.length">
             暂无搜索历史
@@ -58,7 +58,7 @@
             :key="i"
             @click="selectPropose(item.keyword)"
           >
-            <span class="left">{{ item.keyword }}</span>
+            <span class="left color_main">{{ item.keyword }}</span>
           </div>
         </div>
       </div>
@@ -106,27 +106,26 @@ export default {
     },
     async keyDown(e) {
       if (e.key == "Enter") {
-        
         this.search();
       }
       this.propose = false;
     },
     search() {
       let index = this.searchHistory.indexOf(this.value);
-        if (index > -1) {
-          this.searchHistory.splice(index, 1);
-        }
-        this.searchHistory.unshift(this.value);
-        if(this.searchHistory.length>10){
-          this.searchHistory.splice(this.searchHistory.length-1,1);
-        }
-        this.storage.set("search_history", this.searchHistory);
+      if (index > -1) {
+        this.searchHistory.splice(index, 1);
+      }
+      this.searchHistory.unshift(this.value);
+      if (this.searchHistory.length > 10) {
+        this.searchHistory.splice(this.searchHistory.length - 1, 1);
+      }
+      this.storage.set("search_history", this.searchHistory);
       window.dispatchEvent(new CustomEvent("search", { detail: this.value }));
       this.$router.to("/index/search", { value: this.value });
     },
-    clearHistory(){
-      this.searchHistory =[];
-        this.storage.set("search_history", []);
+    clearHistory() {
+      this.searchHistory = [];
+      this.storage.set("search_history", []);
     },
     inputChange() {
       clearInterval(proposeId);
@@ -141,8 +140,8 @@ export default {
           return;
         }
         this.propose = await this.getHostPropose(this.value);
-        this.proposeShow = true;
-      }, 750);
+        if (this.propose.length) this.proposeShow = true;
+      }, 500);
     },
     async getHostPropose(keyword) {
       return (
@@ -154,7 +153,7 @@ export default {
     selectPropose(keyword) {
       this.value = keyword;
       this.proposeShow = false;
-      this.hotShow=false;
+      this.hotShow = false;
       this.search();
     },
     blurEvent() {
@@ -229,7 +228,7 @@ export default {
         width: 220px;
         justify-content: space-between;
         font-size: 14px;
-        &.color_secondary{
+        &.color_secondary {
           justify-content: center;
         }
       }

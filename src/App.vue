@@ -24,11 +24,6 @@ export default {
           window.native.window.childs[subview].onMessage(10);
       }
     });
-    document.addEventListener("keydown", (e) => {
-      if (e.key == "F12") {
-        window.native.window.showDevTool();
-      }
-    });
     const setup = async () => {
       window.native.app.executablePath.then((e) => {
           this.global.executablePath=e;

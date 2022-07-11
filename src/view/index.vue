@@ -65,9 +65,10 @@
             class="progress"
             size="small"
             :max="2000"
+            :format-tooltip="progressTooltip"
+            :disabled="player.status == 0"
             @change="dragProgress"
-            :format-value-text="sliderTipText"
-            @click="skipProgress"
+            @mousedown="skipProgress"
           />
           <div class="left">
             <img
@@ -285,9 +286,9 @@ export default {
     window.addEventListener("drag", ({ detail }) => {
       this.addLocalMusic(detail.path);
     });
-    window.addEventListener('command',({detail})=>{
-        console.log(detail)
-        this.startArgs(detail);
+    window.addEventListener("command", ({ detail }) => {
+      console.log(detail);
+      this.startArgs(detail);
     });
     this.checkConfig();
     this.readConfig();
@@ -295,7 +296,7 @@ export default {
   },
   methods: {
     async startArgs(args) {
-      args = args || await window.native.app.startArgs;
+      args = args || (await window.native.app.startArgs);
       console.log("startup args:", args);
       if (args.indexOf("startup") > -1) {
         window.native.window.hide();
@@ -305,8 +306,7 @@ export default {
         setTimeout(() => {
           this.openSong(id);
           setTimeout(() => {
-            if(this.player.status!=1)
-                this.openSong(id);
+            if (this.player.status != 1) this.openSong(id);
           }, 750);
         }, 1500);
       }
@@ -436,9 +436,6 @@ export default {
     dragProgress(val) {
       audio.duration && (audio.currentTime = (val / 2000) * audio.duration);
     },
-    sliderTipText() {
-      return this.player.current;
-    },
     showVolumePanel(e) {
       console.log(e);
       this.volumePanel = !this.volumePanel;
@@ -521,8 +518,23 @@ export default {
         setup.width = (await setup.width) == 500 ? 501 : 500;
       }, 100);
     },
-    skipProgress() {
+    skipProgress(e) {
+      console.log(this.player.progress, e);
       this.dragProgress(this.player.progress);
+    },
+    progressTooltip(e) {
+      if (this.player.status == 0) {
+        return "无";
+      }
+      let currentTime = parseInt((e / 2000) * audio.duration);
+      let m = parseInt(currentTime / 60);
+      return (
+        m.toString().padStart(2, "0") +
+        ":" +
+        parseInt(currentTime % 60)
+          .toString()
+          .padStart(2, "0")
+      );
     },
     readConfig() {
       this.config.refresh();
@@ -734,9 +746,8 @@ export default {
 }
 
 .volume-panel {
-  padding: 0 12px;
+  padding: 0 6px;
   height: 230px;
-  width: 40px;
   display: flex;
   flex-direction: column;
   align-content: center;

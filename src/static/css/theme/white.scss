@@ -82,9 +82,6 @@ $color_deep:#999;
 }
 
 .volume-panel {
-  background-color: var(--color-progress-bg);
-  box-shadow: 0 0 10px var(--color-panel-shadow);
-
   .el-slider__bar {
     background-color: var(--color-volume-progress-slider)
   }
@@ -132,13 +129,9 @@ button {
   border: 1px solid var(--color-border-primary);
 }
 .el-popper {
-  background: transparent !important;
-  border: none;
-  padding: 0;
-}
-.el-select-dropdown{
   background-color: var(--color-bg-primary);
   box-shadow: 0 0 10px var(--color-bg-shadow);
+  border: none;
 }
 
 .el-radio{
@@ -157,6 +150,7 @@ button {
 }
 .el-select__popper.el-popper{
   background-color: var(--color-bg-primary);
+  box-shadow: 0 0 10px var(--color-bg-shadow);
 }
 .el-select-dropdown__item.selected{
   color: var(--color-text-primary);
@@ -168,5 +162,6 @@ button {
   border: 1px solid var(--color-border-primary);
 }
 .el-input-number__decrease, .el-input-number__increase{
-  background: var(--color-bg-light)
+  background: var(--color-bg-light);
+  border:0;
 }

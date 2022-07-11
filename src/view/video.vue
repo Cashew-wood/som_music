@@ -53,7 +53,7 @@ export default {
       if (e) {
         this.src = await window.native.window.data.src;
         this.title = (await window.native.window.title) || "Som Music";
-      }else{
+      } else {
         video.pause();
       }
     });

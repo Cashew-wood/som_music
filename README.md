@@ -1,11 +1,11 @@
 #### 介绍
-基本的音乐播放器功能,超小的运行环境不到2MB。
-
-接口端依赖网易云音乐 API https://github.com/Binaryify/NeteaseCloudMusicApi 项目，需先启动接口端才可正常运行。
+桌面版音乐播放器，支持歌词、自定义主题、MV视频、离线音乐、在线音乐功能,超小的运行环境不到2MB。
 
 启动命令：`npm run dev`
 
 编译命令：`npm run build`
+
+#### 更新日志
 
 2022-07-10
 

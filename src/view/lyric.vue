@@ -34,10 +34,7 @@ export default {
   },
   methods: {
     async init() {
-      screen = {
-        width: await window.native.device.screenWidth,
-        height: await window.native.device.screenHeight,
-      };
+      screen = await this.global.device.screenActualSize;
       window.native.window.title = "歌词";
       window.native.window.showInTaskbar = false;
       window.native.window.topmost = true;
@@ -49,7 +46,7 @@ export default {
       this.setColor();
       this.setShadow();
       this.setFont();
-      window.native.window.top = parseInt(screen.height) - 70 * 2;
+      window.native.window.top = parseInt(screen.height) - 50 * 2;
       window.native.window.addDragMoveArea(0, 0, 2000, 2000);
       window.native.window.hideInTaskView();
       window.native.window.onMessage = (type, data) => {

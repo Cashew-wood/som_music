@@ -106,7 +106,7 @@ app.config.globalProperties.config = new Proxy(config, {
         bgColor: "rgba(255,255,255,0.95)",
         lyric: true,
         lyricFont: '微软雅黑',
-        lyricFontSize: 48,
+        lyricFontSize: 36,
         lyricShadowColor: '#000000',
         lyricShadowSize: 5,
         lyricForeground: '#005AFF',

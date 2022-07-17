@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  setup() {},
+  setup() { },
   mounted() {
     let theme = document.createElement("style");
     document.body.appendChild(theme);
@@ -15,8 +15,8 @@ export default {
     root.setAttribute("class", "theme");
     window.addEventListener("config", () => {
       console.log("config");
-      let css=localStorage.getItem("theme");
-      if(css) theme.innerHTML = css;
+      let css = localStorage.getItem("theme");
+      if (css) theme.innerHTML = css;
       console.log(theme.innerHTML);
       root.setAttribute("class", "theme");
       for (let subview in window.native.window.childs) {
@@ -24,11 +24,11 @@ export default {
           window.native.window.childs[subview].onMessage(10);
       }
     });
-    const setup = async () => {
+    const setup = () => {
+      this.global.device = this.lazy(window.native.device);
       window.native.app.executablePath.then((e) => {
-          this.global.executablePath=e;
-          console.log(this.global);
-        });
+        this.global.executablePath = e;
+      });
       if (window.native.window.parent) {
       } else {
         this.$router.push("/index");
@@ -39,7 +39,26 @@ export default {
     } else {
       window.addEventListener("native", setup);
     }
+    // document.body.addEventListener('keydown',(e=>{
+    //   if(e.code=='F12')
+    //     window.native.window.showDevTool();
+    // }))
   },
+  methods: {
+    lazy(obj) {
+      return new Proxy({}, {
+        get(target, p) {
+          
+          if(typeof p !='string' || p.startsWith('__v'))return;
+          console.log(p,'get>>')
+          return new Promise((r, s) => {
+            if (target[p]) r(target[p]);
+            obj[p].then(r);
+          })
+        }
+      })
+    }
+  }
 };
 </script>
 

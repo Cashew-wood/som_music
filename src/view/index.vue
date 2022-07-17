@@ -6,53 +6,29 @@
         <SearchBox class="search" />
       </div>
       <div class="right">
-        <span
-          class="iconfont icon-24gf-gear4 icon_top_btn hover"
-          @click="setup"
-        />
-        <span
-          class="min iconfont icon-24gl-minimization icon_top_btn hover"
-          @click="setWindowState('min')"
-        ></span>
-        <span
-          class="max iconfont icon-3zuidahua-1 icon_top_btn hover"
-          @click="
-            windowState == 'max'
-              ? setWindowState('normal')
-              : setWindowState('max')
-          "
-        ></span>
-        <span
-          class="close iconfont icon-guanbi icon_top_btn hover"
-          @click="setWindowState('close')"
-        ></span>
+        <span class="iconfont icon-24gf-gear4 icon_top_btn hover" @click="setup" />
+        <span class="min iconfont icon-24gl-minimization icon_top_btn hover" @click="setWindowState('min')"></span>
+        <span class="max iconfont icon-3zuidahua-1 icon_top_btn hover" @click="
+          windowState == 'max'
+            ? setWindowState('normal')
+            : setWindowState('max')
+        "></span>
+        <span class="close iconfont icon-guanbi icon_top_btn hover" @click="setWindowState('close')"></span>
       </div>
     </div>
     <div class="body">
       <div class="left-menu">
         <div class="label color_secondary">在线音乐</div>
-        <div
-          class="item select h"
-          :class="{ a: menuSelect == 0 }"
-          @click="selectMenu(0)"
-        >
+        <div class="item select h" :class="{ a: menuSelect == 0 }" @click="selectMenu(0)">
           <span class="iconfont color_main icon-yinle"></span>
           <span class="text color_main">音乐馆</span>
         </div>
-        <div
-          class="item select h"
-          :class="{ a: menuSelect == 1 }"
-          @click="selectMenu(1)"
-        >
+        <div class="item select h" :class="{ a: menuSelect == 1 }" @click="selectMenu(1)">
           <span class="iconfont color_main icon-24gf-videoCamera"></span>
           <span class="text color_main">MV</span>
         </div>
         <div class="label color_secondary">我的音乐</div>
-        <div
-          class="item select h"
-          :class="{ a: menuSelect == 2 }"
-          @click="selectMenu(2)"
-        >
+        <div class="item select h" :class="{ a: menuSelect == 2 }" @click="selectMenu(2)">
           <span class="iconfont color_main icon-diannao"></span>
           <span class="text color_main">本地音乐</span>
         </div>
@@ -60,97 +36,55 @@
       <div class="content">
         <router-view ref="subview" class="center-area"></router-view>
         <div class="player">
-          <el-slider
-            v-model="player.progress"
-            class="progress"
-            size="small"
-            :max="2000"
-            :format-tooltip="progressTooltip"
-            :disabled="player.status == 0"
-            @change="dragProgress"
-            @mousedown="skipProgress"
-          />
+          <el-slider v-model="player.progress" class="progress" size="small" :max="2000"
+            :format-tooltip="progressTooltip" :disabled="player.status == 0" @change="dragProgress"
+            @mousedown="skipProgress" />
           <div class="left">
-            <img
-              class="pic"
-              v-if="player.pic"
-              :src="player.pic + '?param=48y48'"
-            />
+            <img class="pic" v-if="player.pic" :src="player.pic + '?param=48y48'" />
             <img class="pic" v-else src="../static/img/default_music.jpg" />
             <div class="info">
               <span class="name color_main">{{
-                player.name || "Som Music"
+                  player.name || "Som Music"
               }}</span>
-              <span class="time color_secondary"
-                >{{ player.current }}/{{ player.duration }}</span
-              >
+              <span class="time color_secondary">{{ player.current }}/{{ player.duration }}</span>
             </div>
           </div>
           <div class="mid">
-            <span
-              class="item iconfont last icon-24gf-previous color_main hover"
-              @click="last"
-            ></span>
-            <span
-              class="item iconfont play color_main hover"
-              :class="
-                player.status == 1
-                  ? 'icon-24gf-pauseCircle'
-                  : 'icon-24gf-playCircle'
-              "
-              @click="play"
-            ></span>
-            <span
-              class="item iconfont next icon-24gf-next color_main hover"
-              @click="next"
-            ></span>
-            <el-tooltip
-              class="box-item"
-              effect="dark"
-              placement="top-start"
-              v-model:visible="volumePanel"
-              trigger="focus"
-              :show-arrow="false"
-            >
+            <span class="item iconfont last icon-24gf-previous color_main hover" @click="last"></span>
+            <span class="item iconfont play color_main hover" :class="
+              player.status == 1
+                ? 'icon-24gf-pauseCircle'
+                : 'icon-24gf-playCircle'
+            " @click="play"></span>
+            <span class="item iconfont next icon-24gf-next color_main hover" @click="next"></span>
+            <el-tooltip class="box-item" effect="dark" placement="top-start" v-model:visible="volumePanel"
+              trigger="focus" :show-arrow="false">
               <template v-slot>
-                <span
-                  class="item iconfont volume color_main"
-                  @click="showVolumePanel"
-                  @click.stop
-                  :class="
-                    volumeIcon[
-                      player.volume && player.volume != 100
-                        ? parseInt((player.volume / 100) * 3) + 1
-                        : player.volume == 100
-                        ? 3
-                        : 0
-                    ]
-                  "
-                ></span>
+                <span class="item iconfont volume color_main" @click="showVolumePanel" @click.stop :class="
+                  volumeIcon[
+                  player.volume && player.volume != 100
+                    ? parseInt((player.volume / 100) * 3) + 1
+                    : player.volume == 100
+                      ? 3
+                      : 0
+                  ]
+                "></span>
               </template>
               <template v-slot:content>
                 <div class="volume-panel" @click.stop>
-                  <el-slider
-                    v-model="player.volume"
-                    vertical
-                    height="125px"
-                    @input="setVolume($event)"
-                  >
+                  <el-slider v-model="player.volume" vertical height="125px" @input="setVolume($event)">
                   </el-slider>
                   <span class="text color_main">{{ player.volume }}%</span>
-                  <span
-                    class="item iconfont volume color_main hover"
-                    @click="setVolume(player.volume > 0 ? 0 : 100)"
+                  <span class="item iconfont volume color_main hover" @click="setVolume(player.volume > 0 ? 0 : 100)"
                     :class="
                       volumeIcon[
-                        player.volume && player.volume != 100
-                          ? parseInt((player.volume / 100) * 3) + 1
-                          : player.volume == 100
+                      player.volume && player.volume != 100
+                        ? parseInt((player.volume / 100) * 3) + 1
+                        : player.volume == 100
                           ? 3
                           : 0
                       ]
-                    "
-                  ></span>
+                    "></span>
                 </div>
               </template>
             </el-tooltip>
@@ -210,11 +144,7 @@ export default {
       }, 40);
     });
 
-    window.native.window.show();
-    window.native.window.width = 1200;
-    window.native.window.height = 800;
-    window.native.window.addDragMoveArea(0, 0, 1200, 50);
-    window.native.window.showCenter();
+
     window.native.window.onClose(() => {
       window.native.window.hide();
     });
@@ -231,7 +161,7 @@ export default {
       }
     );
     window.native.window
-      .createWindow(location.origin + "#setup")
+      .createWindow(location.origin + "#setup", true)
       .then((win) => {
         win.title = "设置";
         win.icon = icon;
@@ -252,7 +182,7 @@ export default {
       menu = win;
     });
     window.native.window
-      .createWindow(location.origin + "#alert")
+      .createWindow(location.origin + "#alert", true)
       .then((win) => {
         win.showInTaskbar = false;
         alert = win;
@@ -293,8 +223,19 @@ export default {
     this.checkConfig();
     this.readConfig();
     this.startArgs();
+    this.show();
   },
   methods: {
+    async show() {
+      window.native.window.show();
+      console.log('show')
+      let actualSize = await this.global.device.screenActualSize;
+      console.log(actualSize,'actualSize')
+      window.native.window.width = parseInt(actualSize.width * 0.625);
+      window.native.window.height = parseInt(actualSize.height * 0.75);
+      window.native.window.addDragMoveArea(0, 0, 99999, 50);
+      window.native.window.showCenter();
+    },
     async startArgs(args) {
       args = args || (await window.native.app.startArgs);
       console.log("startup args:", args);
@@ -327,8 +268,8 @@ export default {
             file.size < 1024
               ? file.size + "B"
               : file.size < 1048576
-              ? (file.size / 1024).toFixed(1) + "KB"
-              : (file.size / 1048576).toFixed(1) + "MB",
+                ? (file.size / 1024).toFixed(1) + "KB"
+                : (file.size / 1048576).toFixed(1) + "MB",
           path: file.absolutePath,
         });
         return id;
@@ -513,7 +454,7 @@ export default {
     },
     async setup() {
       setup.showCenter();
-      setup.show(true, () => {});
+      setup.show(true, () => { });
       setTimeout(async () => {
         setup.width = (await setup.width) == 500 ? 501 : 500;
       }, 100);
@@ -752,6 +693,7 @@ export default {
   flex-direction: column;
   align-content: center;
   border-radius: 6px;
+
   .el-slider {
     margin-top: 20px;
   }

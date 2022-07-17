@@ -17,6 +17,7 @@ export default {
     return {
       items: ["打开主页面", "设置", "退出"],
       interval: 0,
+      rate:1
     };
   },
   async mounted() {
@@ -27,17 +28,17 @@ export default {
     }
   },
   methods: {
-    init() {
+    async init() {
       width = 180;
       height = 150;
       window.native.window.width = width;
       window.native.window.height = height;
       window.native.window.hideInTaskView();
       window.native.window.onMessage = async (type, value) => {
-        console.log(value);
         if (type == 0) {
-          left = value.x - width / 2;
-          top = value.y - height;
+        console.log(value.x * this.rate);
+          left = value.x * this.rate - width / 2;
+          top = value.y * this.rate - height;
           window.native.window.left = left;
           window.native.window.top = top;
           this.interval = Date.now();
@@ -65,6 +66,7 @@ export default {
       setTimeout(() => {
         window.native.device.mouse.initGlobalEvent();
       }, 1000);
+      this.rate=(await this.global.device.screenActualSize).width/(await this.global.device.screenSize).width
     },
     selectItem(i) {
       window.native.window.parent.onMessage({

@@ -39,12 +39,12 @@
 
 
 #### 截图预览
-![主界面](preview/preview1.png)
+![主界面](https://raw.githubusercontent.com/Cashew-wood/som_music/master/preview/preview1.png)
 
-![歌词](preview/preview2.png)
+![歌词](https://raw.githubusercontent.com/Cashew-wood/som_music/master/preview/preview2.png)
 
-![设置](preview/preview3.png)
+![设置](https://raw.githubusercontent.com/Cashew-wood/som_music/master/preview/preview3.png)
 
-![托盘菜单](preview/preview4.png)
+![托盘菜单](https://raw.githubusercontent.com/Cashew-wood/som_music/master/preview/preview4.png)
 
-![MV视频](preview/preview5.png)
+![MV视频](https://raw.githubusercontent.com/Cashew-wood/som_music/master/preview/preview5.png)

@@ -1,11 +1,6 @@
 <template>
   <div class="menu_main main_bg">
-    <div
-      class="item color_main select h"
-      v-for="(text, i) in items"
-      :key="i"
-      @click="selectItem(i)"
-    >
+    <div class="item color_main select h" v-for="(text, i) in items" :key="i" @click="selectItem(i)">
       {{ text }}
     </div>
   </div>
@@ -17,7 +12,7 @@ export default {
     return {
       items: ["打开主页面", "设置", "退出"],
       interval: 0,
-      rate:1
+      rate: 1
     };
   },
   async mounted() {
@@ -34,16 +29,17 @@ export default {
       window.native.window.width = width;
       window.native.window.height = height;
       window.native.window.hideInTaskView();
+      window.native.window.resize = false;
       window.native.window.onMessage = async (type, value) => {
         if (type == 0) {
-        console.log(value.x * this.rate);
+          console.log(value.x * this.rate);
           left = value.x * this.rate - width / 2;
           top = value.y * this.rate - height;
           window.native.window.left = left;
           window.native.window.top = top;
           this.interval = Date.now();
-          window.native.window.show(false);
-          window.native.window.topmost=true;
+          await window.native.window.show(false);
+          window.native.window.topmost = true;
           width = width == 180 ? width + 1 : width - 1;
           window.native.window.width = width;
         } else if (type == 10) {
@@ -66,7 +62,7 @@ export default {
       setTimeout(() => {
         window.native.device.mouse.initGlobalEvent();
       }, 1000);
-      this.rate=(await this.global.device.screenActualSize).width/(await this.global.device.screenSize).width
+      this.rate = (await this.global.device.screenActualSize).width / (await this.global.device.screenSize).width
     },
     selectItem(i) {
       window.native.window.parent.onMessage({
@@ -74,6 +70,7 @@ export default {
         type: 0,
         value: i,
       });
+      window.native.window.hide();
     },
   },
 };

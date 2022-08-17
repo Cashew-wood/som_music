@@ -133,6 +133,7 @@ export default {
       40
     );
     this.fonts = await window.native.system.fonts;
+    window.native.window.resize = false;
     this.config.setSetup();
   },
   components: {

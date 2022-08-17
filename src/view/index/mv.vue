@@ -60,7 +60,7 @@ export default {
     };
   },
   async mounted() {
-    window.native.window.createWindow(location.origin+'#video').then((win) => {
+    window.native.window.createWindow(location.origin+'#video',true).then((win) => {
       win.icon = icon;
       win.width = 800;
       video = win;
@@ -89,7 +89,6 @@ export default {
       let url = await this.getVideo(item.id);
       video.data.src = url;
       video.title = item.name;
-      video.width = (await video.width) == 800 ? 801 : 800;
       video.show(true, () => {});
     },
   },

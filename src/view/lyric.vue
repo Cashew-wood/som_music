@@ -22,7 +22,7 @@ export default {
     };
   },
 
-  setup() {},
+  setup() { },
   mounted() {
     console.log("lyric");
     document.querySelector("#app").setAttribute("class", "lyric_app");
@@ -49,6 +49,7 @@ export default {
       window.native.window.top = parseInt(screen.height) - 50 * 2;
       window.native.window.addDragMoveArea(0, 0, 2000, 2000);
       window.native.window.hideInTaskView();
+      window.native.window.resize = false;
       window.native.window.onMessage = (type, data) => {
         if (type == -1) {
           lyric = defaultDisplay;
@@ -85,8 +86,8 @@ export default {
           let s_ms = m_s_ms[1].split(".");
           times.push(
             parseInt(m_s_ms[0]) * 60000 +
-              parseInt(s_ms[0]) * 1000 +
-              parseInt(s_ms[1])
+            parseInt(s_ms[0]) * 1000 +
+            parseInt(s_ms[1])
           );
         }
         for (let t of times) {
@@ -196,18 +197,18 @@ export default {
         text,
         startX,
         this.height -
-          textSize.actualBoundingBoxDescent -
-          this.config.lyricShadowSize +
-          1
+        textSize.actualBoundingBoxDescent -
+        this.config.lyricShadowSize +
+        1
       );
       canvas[0].clearRect(startX + x, 0, this.width - x - startX, this.height);
       canvas[1].fillText(
         text,
         startX,
         this.height -
-          textSize.actualBoundingBoxDescent -
-          this.config.lyricShadowSize +
-          1
+        textSize.actualBoundingBoxDescent -
+        this.config.lyricShadowSize +
+        1
       );
       canvas[1].clearRect(startX, 0, x, this.height);
     },

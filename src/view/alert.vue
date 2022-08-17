@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     init() {
+      window.native.window.resize = false;
       window.native.window.width = 420;
       window.native.window.height = 160;
       window.native.window.showCenter();

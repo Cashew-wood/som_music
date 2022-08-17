@@ -7,42 +7,41 @@
         <span class="close iconfont icon-guanbi" @click="close"></span>
       </div>
     </div>
-    <video
-      id="video"
-      controls
-      :src="src"
-      autoplay
-      :style="{ height: windowMax ? windowHeight + 'px' : '' }"
-    ></video>
+    <video id="video" controls :src="src" autoplay :style="{ height: windowHeight ? windowHeight + 'px' : '' }"></video>
   </div>
 </template>
 
 <script>
 let video;
+let resize = null;
 export default {
   data() {
     return {
       src: null,
       title: null,
       windowMax: false,
-      windowHeight: 0,
+      windowHeight: 0
     };
   },
-  setup() {},
+  setup() { },
   async mounted() {
     video = document.getElementById("video");
     video.addEventListener("webkitfullscreenchange", this.fullscreen);
     video.addEventListener("fullscreenchange", this.fullscreen);
 
     video.addEventListener("canplay", () => {
-      this.resize();
+      if (!resize) {
+        this.resize();
+        resize = new ResizeObserver((e) => {
+          console.log(e);
+          this.windowHeight = document.getElementById("app").offsetHeight;
+        })
+        resize.observe(document.getElementById("app"));
+      }
     });
     // let suffixIndex = this.src.indexOf('?');
     // this.suffix = this.src.substring((suffixIndex > -1 ? this.src.indexOf('.', suffixIndex - 4) : this.src.lastIndexOf('.')) + 1, suffixIndex > -1 ? suffixIndex : this.src.length);
-    new ResizeObserver((e) => {
-      console.log(e);
-      this.windowHeight = document.getElementById("app").offsetHeight;
-    }).observe(document.getElementById("app"));
+
     window.native.window.addDragMoveArea(
       0,
       0,
@@ -75,6 +74,7 @@ export default {
       console.log(video.offsetHeight);
     },
     close() {
+      resize = null;
       window.native.window.hide();
     },
     max() {
@@ -93,12 +93,13 @@ export default {
 
 #video {
   width: 100%;
-  box-shadow: 0 0 10px #000;
+  box-shadow: 0 0 4px #000;
   padding: 0;
 }
 
 .video_main {
   position: relative;
+  background-color: #000;
 }
 
 .title-bar {

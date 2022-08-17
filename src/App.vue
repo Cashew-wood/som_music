@@ -39,10 +39,10 @@ export default {
     } else {
       window.addEventListener("native", setup);
     }
-    // document.body.addEventListener('keydown',(e=>{
-    //   if(e.code=='F12')
-    //     window.native.window.showDevTool();
-    // }))
+    document.body.addEventListener('keydown',(e=>{
+      if(e.code=='F12')
+        window.native.window.showDevTool();
+    }))
   },
   methods: {
     lazy(obj) {

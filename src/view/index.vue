@@ -166,7 +166,7 @@ export default {
         win.title = "设置";
         win.icon = icon;
         win.width = 500;
-        win.height = 700;
+        win.height = 600;
         setup = win;
       });
 
@@ -230,7 +230,7 @@ export default {
       window.native.window.show();
       console.log('show')
       let actualSize = await this.global.device.screenActualSize;
-      console.log(actualSize,'actualSize')
+      console.log(actualSize, 'actualSize')
       window.native.window.width = parseInt(actualSize.width * 0.625);
       window.native.window.height = parseInt(actualSize.height * 0.75);
       window.native.window.addDragMoveArea(0, 0, 99999, 50);
@@ -416,6 +416,7 @@ export default {
         let base64 = await window.native.io.readToBase64(detail.path);
         audio.src = "data:audio/mp3;base64," + base64;
         lyric.onMessage(-1);
+        console.log('none lyric')
       } else {
         let detail = await this.getSongDetail(id);
         this.player.singer = detail.ar; //{"id":13155879,"name":"霓虹花园","tns":[],"alias":[]}
@@ -426,10 +427,10 @@ export default {
         ).url;
         audio.loop = false;
         audio.src = this.player.url;
-        lyric.onMessage(
-          1,
-          await this.getLyric(this.player.ids[this.player.index])
-        );
+
+        let lyricstr = await this.getLyric(this.player.ids[this.player.index]);
+        console.log('set lyric', lyricstr)
+        lyric.onMessage(1, lyricstr);
       }
       audio.volume = this.player.volume / 100;
       audio.play();

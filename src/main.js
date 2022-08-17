@@ -130,7 +130,6 @@ app.config.globalProperties.config = new Proxy(config, {
             }
         }
         let val = target[propertity]
-        console.log('config', propertity, val)
         if (val == null) {
             let config = app.config.globalProperties.storage.get('config') || this.default;
             val = config[propertity] == null ? this.default[propertity] : config[propertity]

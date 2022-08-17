@@ -12,13 +12,13 @@ module.exports = defineConfig({
           let doneFn=()=>{
             if(execute)execute=false;
             else return;
-            execFile('bin\\WebUI.exe', [`http://localhost:8080`], (error, stdout, stderr) => {
+            execFile('bin\\SepoProgram.exe', [`http://localhost:8080`], (error, stdout, stderr) => {
               if (stdout) process.stdout.write(stdout);
               if (stderr) process.stderr.write(stderr);
             });
           }
           if (compiler.hooks) {
-            compiler.hooks.done.tap({ name: 'WebUI' }, doneFn);
+            compiler.hooks.done.tap({ name: 'SepoProgram' }, doneFn);
           } else {
             compiler.plugin('done', doneFn);
           }

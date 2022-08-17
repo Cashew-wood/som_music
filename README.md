@@ -1,6 +1,8 @@
 #### 介绍
 桌面版音乐播放器，支持歌词、自定义主题、MV视频、离线音乐、在线音乐功能,超小的运行环境不到2MB。
 
+API：https://github.com/Binaryify/NeteaseCloudMusicApi.git
+
 启动命令：`npm run dev`
 
 编译命令：`npm run build`

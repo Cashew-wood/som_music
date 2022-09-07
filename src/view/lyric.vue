@@ -41,7 +41,6 @@ export default {
       for (let element of document.querySelectorAll(".canvas")) {
         canvas.push(element.getContext("2d"));
       }
-      console.log("layer", canvas);
       lyric = defaultDisplay;
       this.setColor();
       this.setShadow();

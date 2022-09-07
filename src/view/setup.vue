@@ -148,8 +148,6 @@ export default {
     changeBgColor(e) {
       this.config.bgColor = e;
       this.preview();
-
-      console.log(e);
     },
     preview() {
       console.log(this.config.bgColor);

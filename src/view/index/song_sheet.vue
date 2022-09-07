@@ -1,7 +1,7 @@
 <template>
   <div class="sheet_main">
     <div class="top">
-      <img class="img" :src="sheet.coverImgUrl + '?param=180y180'" />
+      <el-image class="img" :src="sheet.coverImgUrl + '?param=180y180'" />
       <div class="info">
         <span class="name color_main">{{ sheet.name }}</span>
         <span class="company color_secondary" v-if="sheet.company"
@@ -78,7 +78,7 @@ export default {
   .top {
     display: flex;
 
-    .img {
+    .img,.el-image__inner {
       width: 180px;
       height: 180px;
       border-radius: 10px;
@@ -88,9 +88,11 @@ export default {
       margin-left: 16px;
       display: flex;
       flex-direction: column;
+      flex:1;
 
       .name {
         font-size: 28px;
+        white-space: nowrap;
       }
 
       .company,
@@ -121,7 +123,7 @@ export default {
 
   .title {
     font-size: 18px;
-    margin: 16px 0;
+    margin: 16px 0 4px 0;
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="album_main">
     <div class="top">
-      <img class="img" :src="album.picUrl + '?param=180y180'" />
+      <el-image class="img" :src="album.picUrl + '?param=180y180'" />
       <div class="info">
         <span class="name color_main">{{ album.name }}</span>
         <span class="company color_secondary" v-if="album.company"
@@ -69,7 +69,7 @@ export default {
   .top {
     display: flex;
 
-    .img {
+    .img{
       width: 180px;
       height: 180px;
       border-radius: 10px;
@@ -79,9 +79,10 @@ export default {
       margin-left: 16px;
       display: flex;
       flex-direction: column;
-
+      flex:1;
       .name {
         font-size: 28px;
+        white-space: nowrap;
       }
 
       .company,

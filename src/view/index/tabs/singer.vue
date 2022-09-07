@@ -13,11 +13,14 @@
             <button class="" :class="{ 'full': filter.type == 2 }" @click="setValue('type', 2)">女</button>
             <button class="" :class="{ 'full': filter.type == 3 }" @click="setValue('type', 3)">组合</button>
         </div>
-        <div class="row">
-            <span class="btn select h" @click="setValue('initial', '')" :class="{'a':!filter.initial}">全部</span>
-            <span class="btn select h" v-for="i in 26" :key="i" :class="{'a': filter.initial==String.fromCharCode(i + 96)}"
-                @click="setValue('initial', String.fromCharCode(i + 96))">{{ String.fromCharCode(i + 64) }}</span>
-        </div>
+        <el-scrollbar class="row">
+            <div class="scrollbar-flex-content">
+                <span class="btn select h" @click="setValue('initial', '')" :class="{'a':!filter.initial}">全部</span>
+                <span class="btn select h" v-for="i in 26" :key="i"
+                    :class="{'a': filter.initial==String.fromCharCode(i + 96)}"
+                    @click="setValue('initial', String.fromCharCode(i + 96))">{{ String.fromCharCode(i + 64) }}</span>
+            </div>
+        </el-scrollbar>
         <ScrollList>
             <div class="star">
                 <div class="block" v-for="(item, i) in starList" :key="i" @click="itemTap(item)">
@@ -57,8 +60,8 @@ export default {
             this.filter[key] = value;
             this.starList = await this.getSinger();
         },
-        itemTap(item){
-            this.$router.to('/index/singer_sheet',{id:item.id})
+        itemTap(item) {
+            this.$router.to('/index/singer_sheet', { id: item.id })
         }
     }
 }
@@ -72,6 +75,7 @@ export default {
 
     .row {
         padding: 12px 0;
+        width: 100%;
 
         button {
             width: 100px;
@@ -89,13 +93,12 @@ export default {
         flex-wrap: wrap;
 
         .block {
-            width: 25%;
             box-sizing: border-box;
             display: flex;
             margin-bottom: 20px;
             flex-direction: column;
             align-items: center;
-
+            margin: 0 10px;
             .img {
                 border-radius: 50%;
                 width: 180px;
@@ -108,5 +111,12 @@ export default {
             }
         }
     }
+}
+.scrollbar-flex-content{
+    white-space: nowrap;
+    display: flex;
+}
+.el-scrollbar{
+    height: auto;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="default_main">
     <div class="title color_main">音乐馆</div>
     <div class="tabs">
       <span
@@ -53,9 +53,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main {
+.default_main {
   display: flex;
   flex-direction: column;
+  height: 100%;
 
   .title {
     font-size: 32px;

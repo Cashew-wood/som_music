@@ -1,14 +1,14 @@
 <template>
   <div class="sheet_main">
     <div class="cover">
-      <img class="img" :src="sheet.cover + '?param=978y320'" />
-    </div>
-    <div class="info">
-      <div class="name color_main">
-        {{ sheet.name }}
-      </div>
-      <div class="desc tx c color_secondary">
-        {{ sheet.briefDesc }}
+      <el-image class="img" :src="sheet.cover + '?param=900y220'" fit="contain" />
+      <div class="info">
+        <div class="name color_main">
+          {{ sheet.name }}
+        </div>
+        <div class="desc tx c color_secondary">
+          {{ sheet.briefDesc }}
+        </div>
       </div>
     </div>
     <div class="title color_main">歌曲</div>
@@ -29,10 +29,10 @@ export default {
         limit: 50,
       },
       loading: false,
-      
+
     };
   },
-  components:{
+  components: {
     SongListVue
   },
   async mounted() {
@@ -44,9 +44,9 @@ export default {
     this.songList = await this.geSongs();
   },
   methods: {
-    async nextPage(){
+    async nextPage() {
       this.page.offset++;
-      this.songList=this.songList.concat(await this.geSongs());
+      this.songList = this.songList.concat(await this.geSongs());
     },
     async getDetail() {
       return (await this.$axios.get(`/artist/detail?id=${this.id}`)).data.data.artist;
@@ -71,24 +71,24 @@ export default {
   padding: 15px;
 
   .cover {
-    position: absolute;
-    top: 0;
-    left: 222px;
-    opacity: 0.2;
+    position: relative;
 
     .img {
+      opacity: 0.5;
       width: 100%;
     }
   }
 
   .info {
-    position: fixed;
-    top: 180px;
-    left: 250px;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
     right: 40px;
+    flex: 1;
 
     .name {
       font-size: 36px;
+      white-space: nowrap;
     }
 
     .desc {
@@ -99,8 +99,7 @@ export default {
 
   .title {
     font-size: 18px;
-    margin-top: 260px;
+    margin-top: 12px;
   }
 }
-
 </style>

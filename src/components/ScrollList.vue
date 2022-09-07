@@ -24,6 +24,7 @@ export default {
         bottom: 0;
         top: 0;
         overflow-y: scroll;
+        overflow-x: hidden;
     }
 }
 </style>

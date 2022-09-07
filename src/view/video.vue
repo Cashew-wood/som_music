@@ -39,9 +39,6 @@ export default {
         resize.observe(document.getElementById("app"));
       }
     });
-    // let suffixIndex = this.src.indexOf('?');
-    // this.suffix = this.src.substring((suffixIndex > -1 ? this.src.indexOf('.', suffixIndex - 4) : this.src.lastIndexOf('.')) + 1, suffixIndex > -1 ? suffixIndex : this.src.length);
-
     window.native.window.addDragMoveArea(
       0,
       0,
@@ -59,7 +56,6 @@ export default {
   },
   methods: {
     fullscreen() {
-      console.log("fullscreen event");
       if (document.webkitFullscreenElement) {
         window.native.window.state = "max";
         this.windowMax = true;
@@ -71,7 +67,6 @@ export default {
     resize() {
       window.native.window.height = video.offsetHeight + 20;
       window.native.window.showCenter();
-      console.log(video.offsetHeight);
     },
     close() {
       resize = null;

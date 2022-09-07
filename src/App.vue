@@ -17,7 +17,6 @@ export default {
       console.log("config");
       let css = localStorage.getItem("theme");
       if (css) theme.innerHTML = css;
-      console.log(theme.innerHTML);
       root.setAttribute("class", "theme");
       for (let subview in window.native.window.childs) {
         window.native.window.childs[subview].onMessage &&
@@ -50,7 +49,6 @@ export default {
         get(target, p) {
           
           if(typeof p !='string' || p.startsWith('__v'))return;
-          console.log(p,'get>>')
           return new Promise((r, s) => {
             if (target[p]) r(target[p]);
             obj[p].then(r);

@@ -1,7 +1,7 @@
 <template>
     <div class="elaborate">
-        <div class="banner">
-            <el-carousel trigger="click" type="card" :height="windowWidth > 1500 ? '250px' : '150px'">
+        <div class="banner" ref="banner">
+            <el-carousel trigger="click" type="card" :height="bannerWidth * 0.15 + 'px'">
                 <el-carousel-item v-for="(item, index) in bannerList" :key="index" @click="bannerTap(item)">
                     <img class="img" :src="item.imageUrl" />
                 </el-carousel-item>
@@ -30,19 +30,18 @@ export default {
         return {
             carefullyList: [],
             bannerList: [],
-            windowWidth: 0
+            bannerWidth: 0
         }
     },
     mounted() {
         this.getBanner();
         this.getCarefully();
-        window.addEventListener('onResize', (e) => {
-            this.windowWidth = e.detail.w;
-        })
+        new ResizeObserver(entries => {
+            this.bannerWidth = entries[0].contentRect.width
+        }).observe(this.$refs.banner);
     },
     methods: {
         async getBanner() {
-            // http://localhost:3000/banner?type=0
             const response = await this.$axios.get('/banner?type=0')
             let acceptType = [1, 10]
             for (let i = 0; i < response.data.banners.length; i++) {
@@ -59,8 +58,7 @@ export default {
             this.carefullyList = response.data.playlists;
             console.log(this.carefullyList)
         },
-        async bannerTap(item) {
-            console.log(item)
+        bannerTap(item) {
             if (item.targetType == 1) {//歌曲
                 this.invokeWindowFunction("openSong", item.targetId)
             } else if (item.targetType == 10) {//专辑
@@ -69,7 +67,7 @@ export default {
 
             }
         },
-        async itemTap(item) {
+        itemTap(item) {
             this.$router.to('/index/song_sheet', { id: item.id })
         },
         invokeWindowFunction(method) {

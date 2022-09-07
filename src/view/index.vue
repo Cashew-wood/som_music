@@ -34,62 +34,64 @@
         </div>
       </div>
       <div class="content">
-        <router-view ref="subview" class="center-area"></router-view>
-        <div class="player">
-          <el-slider v-model="player.progress" class="progress" size="small" :max="2000"
-            :format-tooltip="progressTooltip" :disabled="player.status == 0" @change="dragProgress"
-            @mousedown="skipProgress" />
-          <div class="left">
-            <img class="pic" v-if="player.pic" :src="player.pic + '?param=48y48'" />
-            <img class="pic" v-else src="../static/img/default_music.jpg" />
-            <div class="info">
-              <span class="name color_main">{{
-                  player.name || "Som Music"
-              }}</span>
-              <span class="time color_secondary">{{ player.current }}/{{ player.duration }}</span>
+        <div class="absolute">
+          <router-view ref="subview" class="center-area"></router-view>
+          <div class="player">
+            <el-slider v-model="player.progress" class="progress" size="small" :max="2000"
+              :format-tooltip="progressTooltip" :disabled="player.status == 0" @change="dragProgress"
+              @mousedown="skipProgress" />
+            <div class="left">
+              <img class="pic" v-if="player.pic" :src="player.pic + '?param=48y48'" />
+              <img class="pic" v-else src="../static/img/default_music.jpg" />
+              <div class="info">
+                <span class="name color_main">{{
+                player.name || "Som Music"
+                }}</span>
+                <span class="time color_secondary">{{ player.current }}/{{ player.duration }}</span>
+              </div>
             </div>
+            <div class="mid">
+              <span class="item iconfont last icon-24gf-previous color_main hover" @click="last"></span>
+              <span class="item iconfont play color_main hover" :class="
+                player.status == 1
+                  ? 'icon-24gf-pauseCircle'
+                  : 'icon-24gf-playCircle'
+              " @click="play"></span>
+              <span class="item iconfont next icon-24gf-next color_main hover" @click="next"></span>
+              <el-tooltip class="box-item" effect="dark" placement="top-start" v-model:visible="volumePanel"
+                trigger="focus" :show-arrow="false">
+                <template v-slot>
+                  <span class="item iconfont volume color_main" @click="showVolumePanel" @click.stop :class="
+                    volumeIcon[
+                    player.volume && player.volume != 100
+                      ? parseInt((player.volume / 100) * 3) + 1
+                      : player.volume == 100
+                        ? 3
+                        : 0
+                    ]
+                  "></span>
+                </template>
+                <template v-slot:content>
+                  <div class="volume-panel" @click.stop>
+                    <el-slider v-model="player.volume" vertical height="125px" @input="setVolume($event)">
+                    </el-slider>
+                    <span class="text color_main">{{ player.volume }}%</span>
+                    <span class="item iconfont volume color_main hover" @click="setVolume(player.volume > 0 ? 0 : 100)"
+                      :class="
+                        volumeIcon[
+                        player.volume && player.volume != 100
+                          ? parseInt((player.volume / 100) * 3) + 1
+                          : player.volume == 100
+                            ? 3
+                            : 0
+                        ]
+                      "></span>
+                  </div>
+                </template>
+              </el-tooltip>
+            </div>
+            <div class="right"></div>
           </div>
-          <div class="mid">
-            <span class="item iconfont last icon-24gf-previous color_main hover" @click="last"></span>
-            <span class="item iconfont play color_main hover" :class="
-              player.status == 1
-                ? 'icon-24gf-pauseCircle'
-                : 'icon-24gf-playCircle'
-            " @click="play"></span>
-            <span class="item iconfont next icon-24gf-next color_main hover" @click="next"></span>
-            <el-tooltip class="box-item" effect="dark" placement="top-start" v-model:visible="volumePanel"
-              trigger="focus" :show-arrow="false">
-              <template v-slot>
-                <span class="item iconfont volume color_main" @click="showVolumePanel" @click.stop :class="
-                  volumeIcon[
-                  player.volume && player.volume != 100
-                    ? parseInt((player.volume / 100) * 3) + 1
-                    : player.volume == 100
-                      ? 3
-                      : 0
-                  ]
-                "></span>
-              </template>
-              <template v-slot:content>
-                <div class="volume-panel" @click.stop>
-                  <el-slider v-model="player.volume" vertical height="125px" @input="setVolume($event)">
-                  </el-slider>
-                  <span class="text color_main">{{ player.volume }}%</span>
-                  <span class="item iconfont volume color_main hover" @click="setVolume(player.volume > 0 ? 0 : 100)"
-                    :class="
-                      volumeIcon[
-                      player.volume && player.volume != 100
-                        ? parseInt((player.volume / 100) * 3) + 1
-                        : player.volume == 100
-                          ? 3
-                          : 0
-                      ]
-                    "></span>
-                </div>
-              </template>
-            </el-tooltip>
-          </div>
-          <div class="right"></div>
         </div>
       </div>
     </div>
@@ -97,7 +99,6 @@
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld.vue'
 let audio = new Audio();
 import SearchBox from "../components/SearchBox.vue";
 import icon from "../static/img/logo.png";
@@ -147,6 +148,7 @@ export default {
 
     window.native.window.onClose(() => {
       window.native.window.hide();
+
     });
     window.native.window.setNotifyIcon(
       icon,
@@ -210,9 +212,7 @@ export default {
         }
       }
     };
-    console.log("start load music");
     this.loadLocalMusic();
-    console.log("load local music:" + this.localFile.length);
     window.addEventListener("drag", ({ detail }) => {
       this.addLocalMusic(detail.path);
     });
@@ -736,12 +736,20 @@ export default {
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
   flex: 1;
   margin-left: 10px;
+  position: relative;
+  height: 100%;
 }
-
+.absolute{
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 // .el-popper__arrow{
 //     left:28px;
 // }

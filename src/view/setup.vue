@@ -108,6 +108,16 @@
           />
         </div>
       </div>
+      <div class="row">
+        <div class="item">
+          <span class="color_main">阴影大小：</span>
+          <el-input-number
+            v-model="config.lyricShadowSize"
+            :min="0"
+            :max="20"
+          />
+        </div>
+      </div>
     </ScrollListVue>
   </div>
 </template>

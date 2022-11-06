@@ -3,7 +3,7 @@
     <div class="top">
       <el-image class="img" :src="album.picUrl + '?param=180y180'" />
       <div class="info">
-        <span class="name color_main">{{ album.name }}</span>
+        <div class="name color_main tx b">{{ album.name }}</div>
         <span class="company color_secondary" v-if="album.company"
           >发行公司：{{ album.company }}</span
         >
@@ -82,7 +82,6 @@ export default {
       flex:1;
       .name {
         font-size: 28px;
-        white-space: nowrap;
       }
 
       .company,
@@ -107,6 +106,7 @@ export default {
 
     .play {
       width: 120px;
+      margin-top: 8px;
     }
   }
 

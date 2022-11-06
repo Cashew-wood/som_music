@@ -138,12 +138,11 @@ export default {
       any.font = `${this.config.lyricFontSize}px ${this.config.lyricFont}`;
       console.log(any.font);
       textSize = any.measureText(lyric[lyricIndex].text);
-      let w = textSize.width,
+      let w = textSize.width + this.config.lyricShadowSize * 2,
         h =
           textSize.actualBoundingBoxAscent +
           textSize.actualBoundingBoxDescent +
-          this.config.lyricShadowSize -
-          1;
+          this.config.lyricShadowSize * 2;
       console.log(textSize);
       window.native.window.height = h;
       window.native.window.width = w;
@@ -191,23 +190,20 @@ export default {
         this.setFont(true);
       }
       let x = textSize.width * rate;
-      let startX = 0;
+      let startX = this.width / 2 - (textSize.width) / 2;
+
+      let startY = this.height - this.config.lyricShadowSize - 4
+      console.log(startX, startY,this.width, this.height)
       canvas[0].fillText(
         text,
         startX,
-        this.height -
-        textSize.actualBoundingBoxDescent -
-        this.config.lyricShadowSize +
-        1
+        startY
       );
       canvas[0].clearRect(startX + x, 0, this.width - x - startX, this.height);
       canvas[1].fillText(
         text,
         startX,
-        this.height -
-        textSize.actualBoundingBoxDescent -
-        this.config.lyricShadowSize +
-        1
+        startY
       );
       canvas[1].clearRect(startX, 0, x, this.height);
     },

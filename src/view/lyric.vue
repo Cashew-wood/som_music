@@ -24,7 +24,6 @@ export default {
 
   setup() { },
   mounted() {
-    console.log("lyric");
     document.querySelector("#app").setAttribute("class", "lyric_app");
     if (window.native && window.native.isInit) {
       this.init();
@@ -63,13 +62,11 @@ export default {
           this.setLyric(data);
         } else if (type == 10) {
           this.config.refresh();
-          console.log("setFont");
           this.setFont();
         }
       };
     },
     setLyric(str) {
-      console.log(str);
       lyric = [];
       for (let line of str.split("\n")) {
         if (line.trim().length == 0) continue;
@@ -94,7 +91,6 @@ export default {
         }
       }
       lyric = lyric.sort((a, b) => a.t - b.t);
-      console.log(lyric);
     },
     setColor() {
       // foreground = canvas.createLinearGradient(0, 0, 0, canvasDom.height);
@@ -124,7 +120,6 @@ export default {
       // }
       canvas[0].fillStyle = this.config.lyricForeground;
       canvas[1].fillStyle = this.config.lyricBackground;
-      console.log(canvas[0].fillStyle, canvas[1].fillStyle);
     },
     setShadow() {
       for (let item of canvas) {
@@ -133,17 +128,14 @@ export default {
       }
     },
     setFont(notDraw) {
-      console.log("set font");
       let any = canvas[0];
       any.font = `${this.config.lyricFontSize}px ${this.config.lyricFont}`;
-      console.log(any.font);
       textSize = any.measureText(lyric[lyricIndex].text);
       let w = textSize.width + this.config.lyricShadowSize * 2,
         h =
           textSize.actualBoundingBoxAscent +
           textSize.actualBoundingBoxDescent +
           this.config.lyricShadowSize * 2;
-      console.log(textSize);
       window.native.window.height = h;
       window.native.window.width = w;
       window.native.window.left = parseInt(screen.width / 2 - w / 2);
@@ -193,7 +185,6 @@ export default {
       let startX = this.width / 2 - (textSize.width) / 2;
 
       let startY = this.height - this.config.lyricShadowSize - 4
-      console.log(startX, startY,this.width, this.height)
       canvas[0].fillText(
         text,
         startX,

@@ -161,7 +161,7 @@ export default {
         this.focus = false;
         this.hotShow = false;
         this.proposeShow = false;
-      }, 200);
+      }, 700);
     },
   },
 };

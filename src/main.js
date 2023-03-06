@@ -10,7 +10,7 @@ import { reactive } from "vue";
 
 console.log(window.history)
 const app = createApp(App);
-axios.defaults.baseURL = 'http://music.iioc.cc/api'
+axios.defaults.baseURL = 'http://service-a07r4hqj-1252288429.cd.apigw.tencentcs.com'
 app.config.globalProperties.$axios = axios;
 app.config.globalProperties.player = reactive({
     pic: null,

@@ -278,7 +278,7 @@ export default {
       if (info.isFile) {
         id = loadFile(info);
       } else {
-        let files = await window.native.io.files(detail.path);
+        let files = await window.native.io.files(info.absolutePath);
         for (let file of files) {
           id = loadFile(file);
         }
